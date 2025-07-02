@@ -23,3 +23,31 @@ place as high as possible on the leaderboards.
 We will be using the MERN stack to develop our web app (MongoDV, Express.js, React, Node.js) and will be locally hosting it for final usage.
 
 The languages we plan to use are HTML, CSS, and JavaScript
+
+# Setup Tutorial
+
+## Cloning the Repository
+```bash
+git clone https://github.com/MLburns13/CEN3031-Group-8-WebScheduler.git
+cd project
+```
+
+## Setting up modules
+```bash
+cd backend
+npm install
+
+cd ..
+
+cd frontend
+npm install
+
+cd ..
+
+npm install
+```
+
+## Starting the Project
+```bash
+npm start
+```
