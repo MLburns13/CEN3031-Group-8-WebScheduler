@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../login.css';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -29,26 +30,39 @@ function Login() {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <h2>Login</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit">Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="button" onClick={() => navigate('/signup')}>Sign Up</button>
-    </form>
+    <div className="loginContainer">
+      <form onSubmit={handleLogin} className="loginForm">
+        <h2>Login</h2>
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+
+        {error && <p className="errorMessage">{error}</p>}
+
+        <button type="submit">Login</button>
+
+        <button
+          type="button"
+          onClick={() => navigate('/signup')}
+          className="signupButton"
+        >
+          Don't have an account? <u>Sign Up</u>
+        </button>
+      </form>
+    </div>
   );
 }
 
