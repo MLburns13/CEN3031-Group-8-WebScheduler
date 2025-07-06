@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../homepage.css';
+import '../css/shared-styles.css';
+import '../css/homepage.css';
 
 function Home() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/user', { withCredentials: true })
@@ -20,10 +22,12 @@ function Home() {
 
   if (!user) return <p>Loading...</p>;
 
+  console.log(user) //Temporary for data validation. Delete later
+
   return (
     <div className="homeContainer">
       <header className="welcomeBanner">
-        <h1>Welcome, {user.name}!</h1>
+        <h1>Welcome, {user.display_name}!</h1>
         <p>Welcome to the WebScheduler — your productivity journey starts now.</p>
         <button className="logoutButton" onClick={handleLogout}>Logout</button>
       </header>
