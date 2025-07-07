@@ -8,17 +8,19 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
 const bcrypt = require('bcrypt')
-const User = require('./models/User')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const crypto = require('crypto')
 
+//Models
+const {User} = require('./models.js');
+
 passport.serializeUser((user, done) => done(null, user.id))
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.findById(id)
+        const user = await User.findById(id).select('-password')
         done(null, user)
     } 
     catch (err) {
@@ -72,7 +74,7 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 
 // only allows users to be routed to homepage if authenticated
 app.get('/api/user', checkAuthenticated, (req, res) => {
-    res.json({ name: req.user.name, user: req.user })
+    res.json(req.user);
 })
 
 app.post('/login', (req, res, next) => {
@@ -103,8 +105,8 @@ app.delete('/logout', (req, res) => {
 })
 
 app.post('/signup', async (req, res) => {
-    const { email, password, name } = req.body
-    console.log('[SIGNUP REQUEST]', { email, name })
+    const { email, password, display_name, username } = req.body
+    console.log('[SIGNUP REQUEST]', { email, username })
 
     try {
         const existing = await User.findOne({ email })
@@ -114,10 +116,10 @@ app.post('/signup', async (req, res) => {
         }
 
         const hashed = await bcrypt.hash(password, 10)
-        const user = new User({ email, password: hashed, name })
+        const user = new User({ email, password: hashed, display_name, username })
 
         await user.save()
-        console.log('[SIGNUP] New user created:', user.email)
+        console.log('[SIGNUP] New user created:', user.email, user.username)
         res.sendStatus(201)
     } catch (err) {
         console.error('[SIGNUP ERROR]', err)
