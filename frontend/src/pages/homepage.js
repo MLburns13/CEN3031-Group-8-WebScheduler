@@ -29,7 +29,13 @@ function Home() {
       <header className="welcomeBanner">
         <h1>Welcome, {user.display_name}!</h1>
         <p>Welcome to the WebScheduler — your productivity journey starts now.</p>
-        <button className="logoutButton" onClick={handleLogout}>Logout</button>
+        <div className="accountDropdown">
+          <button className="accountDropdownButton">{user.username}</button>
+          <div className="accountDropdownContent">
+            <button onClick={handleLogout}>Profile</button>  {/* Temporary, replace with profile handler*/}
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        </div>
       </header>
 
       <div className="dashboardGrid">
