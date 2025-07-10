@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/shared-styles.css';
 import '../css/homepage.css';
+import PopupTimer from '../components/popupTimer';
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -47,9 +48,23 @@ function Home() {
         <div className="dashboardBox">
           <h2>Popular Tools</h2>
           <ul>
-            <li>Focus Timer</li>
-            <li>Hydration Reminder</li>
-            <li>Stretch Breaks</li>
+            <PopupTimer
+              name="Hydration"
+              popUpMessage="Time for hydration!!!!!!!!!!!!!"
+              initialMinutes={15}
+            />
+
+            <PopupTimer
+              name="Stretch"
+              popUpMessage="Stretch it out!!!!!!!!!!!!!!!!!!!!!"
+              initialMinutes={30}
+            />
+
+            <PopupTimer
+              name="Stand Up"
+              initialMinutes={60}
+              popUpMessage="Stand Up!!!!!!!!!!!!!!!!!!!!!!!!!"
+            />
           </ul>
         </div>
 
