@@ -1,45 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../css/shared-styles.css';
-import '../css/login-signup.css';
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import '../css/shared-styles.css'
+import '../css/login-signup.css'
 
 function Signup() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [display_name, setDisplayName] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [display_name, setDisplayName] = useState('')
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user', { withCredentials: true });
+        const res = await axios.get('http://localhost:5000/api/user', { withCredentials: true })
         if (res.status === 200) {
-          navigate('/');
+          navigate('/')
         }
       }
       catch(err) {}
-    };
+    }
 
-    checkIfLoggedIn();
-  }, [navigate]);
+    checkIfLoggedIn()
+  }, [navigate])
 
   const handleSignup = async (e) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setError('')
 
     try {
-      await axios.post('http://localhost:5000/signup', { email, password, display_name, username });
-      alert('Signup successful!');
-      navigate('/login');
+      await axios.post('http://localhost:5000/signup', { email, password, display_name, username })
+      alert('Signup successful!')
+      navigate('/login')
     } 
     catch (err) {
-      console.error(err);
-      setError('Signup failed.');
+      console.error(err)
+      setError('Signup failed.')
     }
-  };
+  }
 
   return (
     <div className="loginContainer">
@@ -91,7 +91,7 @@ function Signup() {
         </button>
       </form>
     </div>
-  );
+  )
 }
 
-export default Signup;
+export default Signup

@@ -1,47 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../css/shared-styles.css';
-import '../css/login-signup.css';
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import '../css/shared-styles.css'
+import '../css/login-signup.css'
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const navigate = useNavigate()
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user', { withCredentials: true });
+        const res = await axios.get('http://localhost:5000/api/user', { withCredentials: true })
         if (res.status === 200) {
-          navigate('/');
+          navigate('/')
         }
       }
       catch(err) {}
-    };
+    }
 
-    checkIfLoggedIn();
-  }, [navigate]);
+    checkIfLoggedIn()
+  }, [navigate])
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setError('')
     try {
       const res = await axios.post('http://localhost:5000/login',
         { email, password },
         { withCredentials: true }
-      );
+      )
 
       if (res.status === 200) {
-        navigate('/');
+        navigate('/')
       }
     } 
     catch (err) {
-      console.error(err);
-      setError('Login failed. Check your credentials.');
+      console.error(err)
+      setError('Login failed. Check your credentials.')
     }
-  };
+  }
 
   return (
     <div className="loginContainer">
@@ -77,7 +77,7 @@ function Login() {
         </button>
       </form>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login
