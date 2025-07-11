@@ -50,6 +50,7 @@ function Home() {
         <div className="dashboardBox leaderboardCard">
           <h2>Leaderboard</h2>
           <p>Compare your productivity with top users this week.</p>
+          <button>Add Friends</button>
         </div>
       </div>
     </div>
