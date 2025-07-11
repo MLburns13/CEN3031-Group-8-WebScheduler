@@ -13,6 +13,7 @@ const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const crypto = require('crypto')
+const friendRoutes = require('./routes/friendRoutes');
 
 //Models
 const {User} = require('./models.js')
@@ -203,6 +204,8 @@ function checkNotAuthenticated(req,res,next) {
     }
     next()
 }
+
+app.use('/api/friends', friendRoutes);
 
 //404 error handling
 app.use((req, res) => {
