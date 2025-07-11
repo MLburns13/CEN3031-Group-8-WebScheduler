@@ -1,0 +1,116 @@
+.friendListContainer {
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 2rem auto;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.tabButtons button {
+  background-color: #e5e7eb;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tabButtons button.active {
+  background-color: #6366f1;
+  color: white;
+}
+
+.tabButtons button:hover {
+  background-color: #d1d5db;
+}
+
+.friendSearchInput {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.friendCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.friendCard {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.friendCard:hover {
+  transform: scale(1.01);
+}
+
+.friendInfo h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #111827;
+}
+
+.friendInfo p {
+  margin: 0.25rem 0 0 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.friendActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editBtn,
+.removeBtn {
+  border: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.editBtn {
+  background-color: #facc15;
+  color: #1f2937;
+}
+
+.editBtn:hover {
+  background-color: #eab308;
+}
+
+.removeBtn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.removeBtn:hover {
+  background-color: #dc2626;
+}
+
+.noFriendsText {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  padding: 1rem 0;
+}

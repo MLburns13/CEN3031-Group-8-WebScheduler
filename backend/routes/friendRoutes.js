@@ -4,6 +4,7 @@ const { User } = require('../models');
 
 // Send Friend Request
 router.post('/request', async (req, res) => {
+  console.log('[POST /api/friends/request] Hit route');
   const { fromUserId, toUserId } = req.body;
 
   if (fromUserId === toUserId) return res.status(400).json({ msg: "You can't add yourself." });
@@ -75,5 +76,13 @@ router.post('/decline', async (req, res) => {
   }
 });
 
+router.get('/all-users', async (req, res) => {
+  try {
+    const users = await User.find({}, 'username display_name _id')
+    res.json(users)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
 
 module.exports = router;

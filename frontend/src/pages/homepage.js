@@ -4,18 +4,22 @@ import axios from 'axios'
 import '../css/shared-styles.css'
 import '../css/homepage.css'
 import PopupTimer from '../components/popupTimer'
+import FriendsList from '../components/friendsList'
 
 function Home() {
   const [user, setUser] = useState(null)
   const [searchInput, setSearchInput] = useState('')
   const [searchError, setSearchError] = useState(null)
   const navigate = useNavigate()
-
+  const [allUsers, setAllUsers] = useState([])
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/user', { withCredentials: true })
       .then(res => setUser(res.data))
       .catch(() => navigate('/login'))
+
+    axios.get('http://localhost:5000/api/friends/all-users', { withCredentials: true })
+      .then(res => setAllUsers(res.data))
   }, [navigate])
 
   const handleLogout = () => {
@@ -109,9 +113,14 @@ function Home() {
         <div className="dashboardBox leaderboardCard">
           <h2>Leaderboard</h2>
           <p>Compare your productivity with top users this week.</p>
-          <button>Add Friends</button>
         </div>
       </div>
+
+      <FriendsList user={user} allUsers={allUsers} refreshUser={() => {
+        axios.get('http://localhost:5000/api/user', { withCredentials: true })
+          .then(res => setUser(res.data))
+      }} />
+
     </div>
   )
 }
