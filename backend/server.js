@@ -16,7 +16,7 @@ const crypto = require('crypto')
 const friendRoutes = require('./routes/friendRoutes');
 
 //Models
-const {User} = require('./models.js');
+const {User} = require('./models.js')
 
 passport.serializeUser((user, done) => done(null, user.id))
 passport.deserializeUser(async (id, done) => {
@@ -75,7 +75,21 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 
 // only allows users to be routed to homepage if authenticated
 app.get('/api/user', checkAuthenticated, (req, res) => {
-    res.json(req.user);
+    res.json(req.user)
+})
+
+app.get('/api/search-user', async (req, res) => {
+    const { username } = req.query
+    try {
+        const searchUser = await User.findOne({ username })
+        if (!searchUser) {
+        return res.status(404).json({ message: 'User not found' })
+        }
+        res.json({ _id: searchUser._id })
+    } 
+    catch (err) {
+        res.status(500).json({ message: 'Server error' })
+    }
 })
 
 app.post('/login', (req, res, next) => {
@@ -125,6 +139,53 @@ app.post('/signup', async (req, res) => {
     } catch (err) {
         console.error('[SIGNUP ERROR]', err)
         res.status(500).send('Error signing up')
+    }
+})
+
+app.get('/profile/:id', checkAuthenticated, async (req, res) => {
+    try {
+        const userId = req.params.id
+        const viewingUser = await User.findById(userId)
+
+        if (!viewingUser) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        res.status(200).json({ viewingUser })
+        
+    } catch (error) {
+        console.error("Error fetching user profile:", error)
+        res.status(409).json({ message: "Internal Server Error" })
+    }
+})
+
+app.put('/edit-profile', checkAuthenticated, async (req, res) => {
+    const { username, currentPassword, newPassword } = req.body
+
+    try {
+        const user = await User.findById(req.user._id)
+        if (!user) {
+            return res.status(404).send('User not found')
+        }
+
+        const correctPassword = await bcrypt.compare(currentPassword, user.password)
+        if(!correctPassword) {
+            return res.status(401).send('Incorrect current password')
+        }
+
+        if (username) {
+            user.username = username
+        }
+        if (newPassword) {
+            user.password = await bcrypt.hash(newPassword, 10)
+        }
+
+        await user.save()
+        res.sendStatus(200)
+    } 
+    catch (err) {
+        console.error('Error updating profile:', err)
+        res.status(500).send('Error updating profile')
     }
 })
 
