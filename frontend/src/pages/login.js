@@ -75,6 +75,14 @@ function Login() {
         >
           Don't have an account? <u>Sign Up</u>
         </button>
+
+        <button
+          type="button"
+          className="signupButton"
+          onClick={() => navigate('/forgot-password')}
+        >
+          Forgot Password?
+        </button>
       </form>
     </div>
   )
