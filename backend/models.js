@@ -33,4 +33,34 @@ const UserSchema = new mongoose.Schema({
 
 const User = new mongoose.model("User", UserSchema)
 
-module.exports = { User }
+
+// Timer schema (links to users)
+const timerDiscriminator = { discriminatorKey: 'type', timestamps: true };
+
+const TimerSessionSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+}, timerDiscriminator);
+
+const TimerSession = mongoose.model('TimerSession', TimerSessionSchema);
+
+// FocusTimer-specific schema
+const FocusSessionSchema = new mongoose.Schema({
+  focusTime:     { type: Number, required: true },
+  breakTime:     { type: Number, required: true },
+  longBreakTime: { type: Number, required: true }
+});
+
+const FocusSession = TimerSession.discriminator('focus', FocusSessionSchema);
+
+// PopupTimer-specific schema
+const PopupSessionSchema = new mongoose.Schema({
+  popupName:  { type: String,
+                enum: ['hydration','stretch','stand'],
+                required: true },
+  popupCount: { type: Number, default: 0 }
+});
+
+const PopupSession = TimerSession.discriminator('popup', PopupSessionSchema);
+
+
+module.exports = { User, TimerSession, FocusSession, PopupSession }

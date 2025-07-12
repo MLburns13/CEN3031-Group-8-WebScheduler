@@ -103,11 +103,20 @@ function Home() {
             />
 
             <PopupTimer
-              name="Stand Up"
+              name="Stand"
               initialMinutes={60}
               popUpMessage="Stand Up!!!!!!!!!!!!!!!!!!!!!!!!!"
             />
           </ul>
+
+          <button
+            onClick={() => navigate('/focusTimer')}
+            className="timerButton"
+            style={{ marginTop: '16px', width: '100%' }}
+          >
+            Focus Timer
+          </button>
+
         </div>
 
         <div className="dashboardBox leaderboardCard">

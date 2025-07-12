@@ -17,6 +17,8 @@ const friendRoutes = require('./routes/friendRoutes');
 
 //Models
 const {User} = require('./models.js')
+const { FocusSession } = require('./models');
+const { PopupSession } = require('./models');
 
 passport.serializeUser((user, done) => done(null, user.id))
 passport.deserializeUser(async (id, done) => {
@@ -206,6 +208,43 @@ function checkNotAuthenticated(req,res,next) {
 }
 
 app.use('/api/friends', friendRoutes);
+
+// focus timer route
+app.post(
+  '/api/focus-session',
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const { focusTime, breakTime, longBreakTime } = req.body;
+      const session = await FocusSession.create({
+        user: req.user._id,
+        focusTime,
+        breakTime,
+        longBreakTime
+      });
+      res.status(201).json(session);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Could not save focus session' });
+    }
+  }
+);
+
+// popup timer route
+app.post('/api/timers/popup', checkAuthenticated, async (req, res) => {
+  try {
+    const { popupName, popupCount } = req.body;
+    const session = await PopupSession.create({
+      user: req.user._id,
+      popupName,
+      popupCount
+    });
+    res.status(201).json(session);
+  } catch (err) {
+    console.error('Error saving popup session:', err);
+    res.status(500).json({ message: 'Could not save popup session' });
+  }
+});
 
 //404 error handling
 app.use((req, res) => {
