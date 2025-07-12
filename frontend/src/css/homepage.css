@@ -91,3 +91,7 @@
   flex-basis: 100%;
   max-width: none;
 }
+
+.nonIndentedList {
+  padding-inline-start: 0;
+}

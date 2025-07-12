@@ -1,0 +1,99 @@
+.focusTimerContainer {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  background: linear-gradient(170deg, #3b24bd, #2b0c80, #10032e, #01000c);
+}
+
+.backButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6.4px 12.8px;
+  width: auto;
+}
+
+/* page title */
+.focusHeading {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* Settings Form */
+.timerSettings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 80%;
+  max-width: 500px;
+  font-size: 19.2px;
+}
+
+.setTimerContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.focusTimerInput {
+  width: 60px;
+  padding: 6.4px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.startButton {
+  margin-top: 16px;
+  padding: 12.8px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff25;
+  color: white;
+  cursor: pointer;
+}
+
+.timerCountdownContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 48px;
+}
+
+.timerCountdownContainer h1 {
+  font-size: 64px;
+  margin: 0;
+}
+
+.finishMessage {
+  font-size: 24px;
+  margin-top: 16px;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.buttonContainer button,
+.timerCountdownContainer button {
+  padding: 12.8px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #ffffff25;
+  color: white;
+  cursor: pointer;
+}

@@ -10,6 +10,7 @@ import Signup from './pages/signup'
 import Home from './pages/homepage'
 import Profile from './pages/profile'
 import ProfileEditor from './pages/profileEditor'
+import FocusTimerPage from './pages/focusTimer';
 
 function App() {
   const [message, setMessage] = useState('')
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/edit-profile" element={<ProfileEditor />} />
+        <Route path="/focusTimer" element={<FocusTimerPage />} />
       </Routes>
     </Router>
   )
