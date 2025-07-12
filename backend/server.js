@@ -13,10 +13,15 @@ const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const crypto = require('crypto')
-const friendRoutes = require('./routes/friendRoutes');
+const friendRoutes = require('./routes/friendRoutes')
 
 //Models
 const {User} = require('./models.js')
+
+//Utils
+const { sendVerificationEmail } = require('./utils/email')
+const { sendPasswordResetEmail } = require('./utils/email')
+
 
 passport.serializeUser((user, done) => done(null, user.id))
 passport.deserializeUser(async (id, done) => {
@@ -102,6 +107,12 @@ app.post('/login', (req, res, next) => {
             return res.status(401).json({ message: info.message || 'Login failed' })
         }
 
+        /* Requires user to be verified to login (uncomment out if we decide we want this)
+        if (!user.isVerified) {
+            return done(null, false, { message: 'Please verify your email before logging in' })
+        }
+        */
+
         req.logIn(user, (err) => {
             if(err) {
                 return next(err)
@@ -126,21 +137,116 @@ app.post('/signup', async (req, res) => {
     try {
         const existing = await User.findOne({ email })
         if (existing) {
-        console.log('[SIGNUP] User already exists')
-        return res.status(400).send('User already exists')
+            console.log('[SIGNUP] User already exists')
+            return res.status(400).send('User already exists')
         }
 
         const hashed = await bcrypt.hash(password, 10)
-        const user = new User({ email, password: hashed, display_name, username })
+        const token = crypto.randomBytes(32).toString('hex')
+
+        const user = new User({
+            email,
+            password: hashed,
+            display_name,
+            username,
+            verificationToken: token,
+            tokenExpires: new Date(Date.now() + 1000 * 60 * 60)
+        })
 
         await user.save()
-        console.log('[SIGNUP] New user created:', user.email, user.username)
-        res.sendStatus(201)
+        await sendVerificationEmail(email, token)
+
+        console.log('[SIGNUP] New user created, verification email sent:', email)
+        console.log('[SIGNUP] Full user:', user)
+        res.status(201).send('Signup successful. Check your email to verify your account.')
     } catch (err) {
         console.error('[SIGNUP ERROR]', err)
         res.status(500).send('Error signing up')
     }
 })
+
+app.get('/verify-email/:token', async (req, res) => {
+    try {
+        const token = req.params.token
+        console.log('[VERIFY] Incoming token:', token)
+
+        const user = await User.findOne({
+            verificationToken: token,
+            tokenExpires: { $gt: Date.now() }
+        })
+
+        if (!user) {
+            console.log('[VERIFY] Token not found or expired')
+            return res.status(400).send('Invalid or expired token')
+        }
+
+        user.isVerified = true
+        user.verificationToken = undefined
+        user.tokenExpires = undefined
+        await user.save()
+
+        console.log('[VERIFY] User verified:', user.email)
+        res.send('Email verified successfully')
+    } catch (err) {
+        console.error('[VERIFY ERROR]', err)
+        res.status(500).send('Server error')
+    }
+})
+
+app.post('/api/request-password-reset', async (req, res) => {
+    const { email } = req.body
+
+    try {
+        const user = await User.findOne({ email })
+        if (!user) {
+        return res.status(200).send('If your email is registered, a reset link has been sent.')
+        }
+
+        const resetToken = crypto.randomBytes(32).toString('hex')
+        user.resetPasswordToken = resetToken
+        user.resetPasswordExpires = new Date(Date.now() + 3600000) // 1 hour
+        await user.save()
+
+        await sendPasswordResetEmail(email, resetToken)
+
+        res.status(200).send('If your email is registered, a reset link has been sent.')
+    } catch (err) {
+        console.error(err)
+        res.status(500).send('Server error')
+    }
+})
+
+app.post('/api/reset-password/:token', async (req, res) => {
+    const { token } = req.params
+    const { password } = req.body
+    const { confirmPassword } = req.body
+
+    try {
+        const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+        })
+
+        if (!user) {
+        return res.status(400).send('Invalid or expired token')
+        }
+
+        if(password !== confirmPassword) {
+            return res.status(402).send('Passwords do not match')
+        }
+
+        user.password = await bcrypt.hash(password, 10)
+        user.resetPasswordToken = undefined
+        user.resetPasswordExpires = undefined
+        await user.save()
+
+        res.send('Password reset successful')
+    } catch (err) {
+        console.error(err)
+        res.status(500).send('Server error')
+    }
+})
+
 
 app.get('/profile/:id', checkAuthenticated, async (req, res) => {
     try {
@@ -205,7 +311,7 @@ function checkNotAuthenticated(req,res,next) {
     next()
 }
 
-app.use('/api/friends', friendRoutes);
+app.use('/api/friends', friendRoutes)
 
 //404 error handling
 app.use((req, res) => {

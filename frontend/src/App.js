@@ -1,12 +1,14 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import logo from './logo.svg'
 import './App.css'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './pages/login'
 import Signup from './pages/signup'
+import VerifyEmail from './pages/verifyEmail'
+import ForgotPassword from './pages/forgotPassword'
+import ResetPassword from './pages/resetPassword'
 import Home from './pages/homepage'
 import Profile from './pages/profile'
 import ProfileEditor from './pages/profileEditor'
@@ -25,6 +27,9 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/" element={<Home />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/edit-profile" element={<ProfileEditor />} />

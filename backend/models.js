@@ -19,6 +19,22 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    verificationToken: {
+        type: String,
+    },
+    tokenExpires: {
+        type: Date,
+    },  
+    resetPasswordToken: {
+        type: String,
+    },
+    resetPasswordExpires: {
+        type: Date,
+    },
     friendsList: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "users",
@@ -29,7 +45,7 @@ const UserSchema = new mongoose.Schema({
         ref: "users",
         default: [],
     },
-});
+}, { timestamps: true });
 
 const User = new mongoose.model("User", UserSchema)
 
