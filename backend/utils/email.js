@@ -12,7 +12,7 @@ async function sendVerificationEmail(email, token) {
     const link = `http://localhost:3000/verify-email/${token}`
 
     await transporter.sendMail({
-        from: '"Web Scheduler" <no-reply@yourapp.com>',
+        from: '"Web Scheduler Email Verification" <no-reply@yourapp.com>',
         to: email,
         subject: 'Verify your email',
         html: `<p>Click <a href="${link}">here</a> to verify your email.</p>`
@@ -23,7 +23,7 @@ async function sendPasswordResetEmail(email, token) {
     const link = `http://localhost:3000/reset-password/${token}`
 
     await transporter.sendMail({
-        from: '"Web Scheduler" <no-reply@yourapp.com>',
+        from: '"Web Scheduler Password Reset" <no-reply@yourapp.com>',
         to: email,
         subject: 'Password Reset',
         html: `<p>Click <a href="${link}">here</a> to reset your password.</p>`
