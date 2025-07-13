@@ -3,7 +3,7 @@ const request = require('supertest')
 const express = require('express')
 const session = require('express-session')
 const mongoose = require('mongoose')
-const app = require('../server') // if your express app is exported separately
+const app = require('../server')
 const { User } = require('../models')
 
 // Setup mock server and DB

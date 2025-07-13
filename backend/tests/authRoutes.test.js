@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '.env.test' });
 const request = require('supertest')
 const mongoose = require('mongoose')
-const app = require('../server') // make sure server.js exports your Express app
+const app = require('../server')
 const { User } = require('../models')
 
 beforeAll(async () => {
