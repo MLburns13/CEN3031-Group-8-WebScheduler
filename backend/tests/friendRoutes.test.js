@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '.env.test' });
+require('dotenv').config({ path: '.env' });
 const request = require('supertest')
 const express = require('express')
 const session = require('express-session')
@@ -8,7 +8,7 @@ const { User } = require('../models')
 
 // Setup mock server and DB
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI_TEST, {
+  await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
