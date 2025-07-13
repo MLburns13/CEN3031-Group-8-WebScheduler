@@ -5,6 +5,7 @@
     "client": "cd frontend && npm start"
   },
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "concurrently": "^8.0.0",
+    "supertest": "^7.1.3"
   }
 }

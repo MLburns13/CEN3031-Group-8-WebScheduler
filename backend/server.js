@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
@@ -16,7 +16,7 @@ const crypto = require('crypto')
 const friendRoutes = require('./routes/friendRoutes')
 
 //Models
-const {User} = require('./models.js')
+const { User } = require('./models.js');
 const { FocusSession } = require('./models');
 const { PopupSession } = require('./models');
 
@@ -76,7 +76,10 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 app.get('/', (req, res) => res.send('API running'))
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+// Only listen when NOT in test mode
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+}
 
 // only allows users to be routed to homepage if authenticated
 app.get('/api/user', checkAuthenticated, (req, res) => {
@@ -88,7 +91,7 @@ app.get('/api/search-user', async (req, res) => {
     try {
         const searchUser = await User.findOne({ username })
         if (!searchUser) {
-        return res.status(404).json({ message: 'User not found' })
+            return res.status(404).json({ message: 'User not found' })
         }
         res.json({ _id: searchUser._id })
     } 
@@ -99,11 +102,11 @@ app.get('/api/search-user', async (req, res) => {
 
 app.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-        if(err) {
+        if (err) {
             return next(err)
         }
 
-        if(!user) {
+        if (!user) {
             return res.status(401).json({ message: info.message || 'Login failed' })
         }
 
@@ -114,7 +117,7 @@ app.post('/login', (req, res, next) => {
         */
 
         req.logIn(user, (err) => {
-            if(err) {
+            if (err) {
                 return next(err)
             }
             // Login success
@@ -258,7 +261,6 @@ app.get('/profile/:id', checkAuthenticated, async (req, res) => {
         }
 
         res.status(200).json({ viewingUser })
-        
     } catch (error) {
         console.error("Error fetching user profile:", error)
         res.status(409).json({ message: "Internal Server Error" })
@@ -275,7 +277,7 @@ app.put('/edit-profile', checkAuthenticated, async (req, res) => {
         }
 
         const correctPassword = await bcrypt.compare(currentPassword, user.password)
-        if(!correctPassword) {
+        if (!correctPassword) {
             return res.status(401).send('Incorrect current password')
         }
 
@@ -296,16 +298,16 @@ app.put('/edit-profile', checkAuthenticated, async (req, res) => {
 })
 
 //checks if user is authenticated
-function checkAuthenticated(req,res,next) {
-    if(req.isAuthenticated()){
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
         return next()
     }
     res.status(401).json({ message: 'Not authenticated' })
 }
 
 //checks if user isnt authenticated
-function checkNotAuthenticated(req,res,next) {
-    if(req.isAuthenticated()){
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
         return res.status(403).json({ message: 'Already authenticated' })
     }
     next()
@@ -354,3 +356,6 @@ app.post('/api/timers/popup', checkAuthenticated, async (req, res) => {
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' })
 })
+
+// Export the app for testing
+module.exports = app
