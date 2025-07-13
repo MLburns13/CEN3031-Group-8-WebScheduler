@@ -21,9 +21,7 @@ const { FocusSession } = require('./models');
 const { PopupSession } = require('./models');
 
 //Utils
-const { sendVerificationEmail } = require('./utils/email')
-const { sendPasswordResetEmail } = require('./utils/email')
-
+const { sendVerificationEmail, sendPasswordResetEmail } = require('./utils/email')
 
 passport.serializeUser((user, done) => done(null, user.id))
 passport.deserializeUser(async (id, done) => {
