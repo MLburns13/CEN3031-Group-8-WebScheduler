@@ -52,49 +52,60 @@ function EditProfile() {
         }
     }
 
+    const handleBack = () => {
+        navigate(`/profile/${user._id}`)
+    }
+    
     if (!user) return <p>Loading...</p>
 
     return (
-        <div className="formContainer">
-        <h2>Edit Profile</h2>
-        <form onSubmit={handleSubmit}>
-            <label>Username:</label>
-            <input 
-                type="text" 
-                value={username} 
-                onChange={e => setUsername(e.target.value)} 
-                required 
-            />
+        <div className="homeContainer">
+            <div className="welcomeBanner">
+            <h2>Edit Profile</h2>
+            <div className="accountDropdown">
+                <button className="accountDropdownButton" onClick={handleBack}>
+                    Back
+                </button> 
+            </div>
+            <form onSubmit={handleSubmit}>
+                <label>Username:</label>
+                <input 
+                    type="text" 
+                    value={username} 
+                    onChange={e => setUsername(e.target.value)} 
+                    required 
+                />
 
-            <label>Current Password:</label>
-            <input 
-                type="password" 
-                value={currentPassword} 
-                onChange={e => setCurrentPassword(e.target.value)} 
-                required 
-            />
+                <label>Current Password:</label>
+                <input 
+                    type="password" 
+                    value={currentPassword} 
+                    onChange={e => setCurrentPassword(e.target.value)} 
+                    required 
+                />
 
-            <label>New Password:</label>
-            <input 
-                type="password" 
-                value={newPassword} 
-                onChange={e => setNewPassword(e.target.value)} 
-                required 
-            />
+                <label>New Password:</label>
+                <input 
+                    type="password" 
+                    value={newPassword} 
+                    onChange={e => setNewPassword(e.target.value)} 
+                    required 
+                />
 
-            <label>Confirm Password:</label>
-            <input 
-                type="password" 
-                value={confirmPassword} 
-                onChange={e => setConfirmPassword(e.target.value)} 
-                required 
-            />
+                <label>Confirm Password:</label>
+                <input 
+                    type="password" 
+                    value={confirmPassword} 
+                    onChange={e => setConfirmPassword(e.target.value)} 
+                    required 
+                />
 
-            {error && <p className="errorMessage">{error}</p>}
-            {success && <p className="successMessage">{success}</p>}
+                {error && <p className="errorMessage">{error}</p>}
+                {success && <p className="successMessage">{success}</p>}
 
-            <button type="submit">Save Changes</button>
-        </form>
+                <button type="submit">Save Changes</button>
+            </form>
+            </div>
         </div>
     )
 }

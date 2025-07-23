@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../css/shared-styles.css'
 import '../css/forgot-password.css'
@@ -7,6 +8,7 @@ function ForgotPassword() {
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -21,22 +23,33 @@ function ForgotPassword() {
         }
     }
 
-    return (
-        <div>
-        <h2>Forgot Password</h2>
-        <form onSubmit={handleSubmit}>
-            <input
-            type="email"
-            placeholder="Enter your registered email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            />
-            <button type="submit">Send Reset Link</button>
-        </form>
+    const handleBack = () => {
+        navigate('/login')
+  }
 
-        {message && <p style={{ color: 'green' }}>{message}</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+    return (
+        <div className="homeContainer">
+            <header className="welcomeBanner">
+                <h2>Forgot Password</h2>
+                <div className="accountDropdown">
+                    <button className="accountDropdownButton" onClick={handleBack}>
+                        Back
+                    </button> 
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <input
+                    type="email"
+                    placeholder="Enter your registered email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    />
+                    <button type="submit">Send Reset Link</button>
+                </form>
+
+                {message && <p style={{ color: 'green' }}>{message}</p>}
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+            </header>
         </div>
     )
 }

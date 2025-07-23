@@ -58,7 +58,7 @@ function Home() {
         <div className="accountDropdown">
           <button className="accountDropdownButton">{user.username}</button>
           <div className="accountDropdownContent">
-            <button onClick={handleProfile}>Profile</button>  {/* Temporary, replace with profile handler*/}
+            <button onClick={handleProfile}>Profile</button>
             <button onClick={handleLogout}>Logout</button>
           </div>
         </div>

@@ -67,7 +67,7 @@
 }
 
 .accountDropdown:hover .accountDropdownButton {
-  background-color: #3e8e41;
+  background-color: var(--primary-1);
 }
 
 .dashboardGrid {
