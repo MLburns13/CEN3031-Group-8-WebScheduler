@@ -45,6 +45,10 @@ const UserSchema = new mongoose.Schema({
         ref: "users",
         default: [],
     },
+    timerSessions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+    }
 }, { timestamps: true });
 
 const User = new mongoose.model("User", UserSchema)
