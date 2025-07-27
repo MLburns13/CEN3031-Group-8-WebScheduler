@@ -128,7 +128,6 @@ function Home() {
         </div>
 
         <div className="dashboardBox leaderboardCard">
-          <h2>Leaderboard</h2>
           <Leaderboard user={user} allUsers={allUsers} allTimers={allTimers} />
         </div>
       </div>

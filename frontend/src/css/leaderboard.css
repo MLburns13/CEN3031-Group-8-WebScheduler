@@ -7,7 +7,7 @@
 .leaderboardHeader,
 .leaderboardRow {
   display: grid;
-  grid-template-columns: 40px 1fr 100px 120px;
+  grid-template-columns: 40px 160px minmax(140px, 1fr) 120px 120px; /* #, Name, Username, Focus Time, Popup Count */
   padding: 8px 0;
   border-bottom: 1px solid #eee;
 }
@@ -27,4 +27,20 @@
 
 .clickable:hover {
   background-color: #f0f0f0;
+}
+
+.leaderboardHeader span:nth-child(3),
+.leaderboardRow span:nth-child(3) {
+  text-align: left;
+}
+
+.leaderboardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.toggleSortButton {
+  margin-left: 16px;
 }

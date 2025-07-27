@@ -82,33 +82,35 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.get('/api/timers', checkAuthenticated, async (req, res) => {
-  try {
-    const friends = await User.find({ _id: { $in: req.user.friendsList } });
+    try {
+        // Include the active user and their friends
+        const ids = [...req.user.friendsList, req.user._id];
+        const usersList = await User.find({ _id: { $in: ids } });
 
-    const leaderboard = await Promise.all(friends.map(async (friend) => {
-      const focusSessions = await FocusSession.find({ user: friend._id });
-      const popupSessions = await PopupSession.find({ user: friend._id });
+        const leaderboard = await Promise.all(usersList.map(async (user) => {
+            const focusSessions = await FocusSession.find({ user: user._id });
+            const popupSessions = await PopupSession.find({ user: user._id });
 
-      const totalFocusTime = focusSessions.reduce((sum, session) => sum + session.focusTime, 0);
-      const totalPopupCount = popupSessions.reduce((sum, session) => sum + session.popupCount, 0);
+            const totalFocusTime = focusSessions.reduce((sum, session) => sum + session.focusTime, 0);
+            const totalPopupCount = popupSessions.reduce((sum, session) => sum + session.popupCount, 0);
 
-      return {
-        userId: friend._id,
-        username: friend.username,
-        display_name: friend.display_name,
-        totalFocusTime,
-        totalPopupCount
-      };
-    }));
+            return {
+                userId: user._id,
+                username: user.username,
+                display_name: user.display_name,
+                totalFocusTime,
+                totalPopupCount
+            };
+        }));
 
-    // Sort by focus time descending
-    leaderboard.sort((a, b) => b.totalFocusTime - a.totalFocusTime);
+        // Sort by focus time descending
+        leaderboard.sort((a, b) => b.totalFocusTime - a.totalFocusTime);
 
-    res.json(leaderboard);
-  } catch (err) {
-    console.error('Error generating leaderboard:', err);
-    res.status(500).json({ message: 'Error generating leaderboard' });
-  }
+        res.json(leaderboard);
+    } catch (err) {
+        console.error('Error generating leaderboard:', err);
+        res.status(500).json({ message: 'Error generating leaderboard' });
+    }
 });
 
 // only allows users to be routed to homepage if authenticated
