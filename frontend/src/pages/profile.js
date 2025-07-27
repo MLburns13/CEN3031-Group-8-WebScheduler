@@ -33,6 +33,10 @@ function Home() {
     navigate('/edit-profile')
   }
 
+ const handleBack = () => {
+    navigate('/')
+  }
+
   if (!user) return <p>Loading...</p>
   if (!viewingUser) return <p>Loading profile...</p>
 
@@ -48,6 +52,11 @@ function Home() {
       <header className="welcomeBanner">
         <h1>Welcome to {viewingUser.display_name}'s Profile!</h1>
         <p>Profile Screen</p>
+        <div className="accountDropdown">
+          <button className="accountDropdownButton" onClick={handleBack}>
+            Back
+          </button> 
+        </div>
         {ownProfile && (
           <button className="editProfileButton" onClick={handleEdit}>
             Edit Profile
