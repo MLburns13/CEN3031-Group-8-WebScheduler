@@ -81,6 +81,36 @@ if (process.env.NODE_ENV !== 'test') {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 }
 
+app.get('/api/timers', checkAuthenticated, async (req, res) => {
+  try {
+    const friends = await User.find({ _id: { $in: req.user.friendsList } });
+
+    const leaderboard = await Promise.all(friends.map(async (friend) => {
+      const focusSessions = await FocusSession.find({ user: friend._id });
+      const popupSessions = await PopupSession.find({ user: friend._id });
+
+      const totalFocusTime = focusSessions.reduce((sum, session) => sum + session.focusTime, 0);
+      const totalPopupCount = popupSessions.reduce((sum, session) => sum + session.popupCount, 0);
+
+      return {
+        userId: friend._id,
+        username: friend.username,
+        display_name: friend.display_name,
+        totalFocusTime,
+        totalPopupCount
+      };
+    }));
+
+    // Sort by focus time descending
+    leaderboard.sort((a, b) => b.totalFocusTime - a.totalFocusTime);
+
+    res.json(leaderboard);
+  } catch (err) {
+    console.error('Error generating leaderboard:', err);
+    res.status(500).json({ message: 'Error generating leaderboard' });
+  }
+});
+
 // only allows users to be routed to homepage if authenticated
 app.get('/api/user', checkAuthenticated, (req, res) => {
     res.json(req.user)

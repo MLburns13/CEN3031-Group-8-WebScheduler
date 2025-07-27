@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../css/friendList.css'
 
+
 function FriendList({ user, allUsers = [], refreshUser }) {
+
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('friends')
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -85,7 +89,7 @@ function FriendList({ user, allUsers = [], refreshUser }) {
             <p className="noFriendsText">You have no friends yet.</p>
           ) : (
             friendObjects.map((friend) => (
-              <div key={friend._id} className="friendCard">
+              <div key={friend._id} className="friendCard" onClick={() => navigate(`/profile/${friend._id}`)} style={{ cursor: 'pointer' }}>
                 <div className="friendInfo">
                   <h3>{friend.display_name}</h3>
                   <p>@{friend.username}</p>
@@ -111,7 +115,7 @@ function FriendList({ user, allUsers = [], refreshUser }) {
               <p className="noFriendsText">No users found.</p>
             ) : (
               filteredUsers.map((userToAdd) => (
-                <div key={userToAdd._id} className="friendCard">
+                <div key={userToAdd._id} className="friendCard" onClick={() => navigate(`/profile/${userToAdd._id}`)} style={{ cursor: 'pointer' }}>
                   <div className="friendInfo">
                     <h3>{userToAdd.display_name}</h3>
                     <p>@{userToAdd.username}</p>
@@ -138,7 +142,7 @@ function FriendList({ user, allUsers = [], refreshUser }) {
             <p className="noFriendsText">No pending requests.</p>
           ) : (
             requestObjects.map((requester) => (
-              <div key={requester._id} className="friendCard">
+              <div key={requester._id} className="friendCard" onClick={() => navigate(`/profile/${requester._id}`)} style={{ cursor: 'pointer' }}>
                 <div className="friendInfo">
                   <h3>{requester.display_name}</h3>
                   <p>@{requester.username}</p>

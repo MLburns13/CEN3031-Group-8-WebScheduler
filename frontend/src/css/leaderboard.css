@@ -1,0 +1,30 @@
+.leaderboardContainer {
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.leaderboardHeader,
+.leaderboardRow {
+  display: grid;
+  grid-template-columns: 40px 1fr 100px 120px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.leaderboardHeader {
+  font-weight: bold;
+}
+
+.leaderboardRow:hover {
+  background: #f9f9f9;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable:hover {
+  background-color: #f0f0f0;
+}
