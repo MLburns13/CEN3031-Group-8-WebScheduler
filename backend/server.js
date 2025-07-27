@@ -328,6 +328,12 @@ app.post(
         breakTime,
         longBreakTime
       });
+
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { timerSessions: session._id } }
+      );
+
       res.status(201).json(session);
     } catch (err) {
       console.error(err);
@@ -345,6 +351,12 @@ app.post('/api/timers/popup', checkAuthenticated, async (req, res) => {
       popupName,
       popupCount
     });
+
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $push: { timerSessions: session._id } }
+    );
+    
     res.status(201).json(session);
   } catch (err) {
     console.error('Error saving popup session:', err);
