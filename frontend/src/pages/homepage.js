@@ -56,8 +56,6 @@ function Home() {
 
   if (!user) return <p>Loading...</p>
 
-  console.log(user) //Temporary for data validation. Delete later
-
   return (
     <div className="homeContainer">
       <header className="welcomeBanner">
@@ -128,7 +126,7 @@ function Home() {
         </div>
 
         <div className="dashboardBox leaderboardCard">
-          <Leaderboard user={user} allUsers={allUsers} allTimers={allTimers} />
+          <Leaderboard leaderboardData={allTimers} />
         </div>
       </div>
 

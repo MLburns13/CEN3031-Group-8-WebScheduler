@@ -7,6 +7,7 @@ import '../css/profile.css'
 function Home() {
   const [user, setUser] = useState(null)
   const [viewingUser, setViewingUser] = useState(null)
+  const [recentTimers, setRecentTimers] = useState([])
   const navigate = useNavigate()
   const { id } = useParams()
   var ownProfile = false
@@ -28,12 +29,21 @@ function Home() {
       })
   }, [id, navigate])
 
+  useEffect(() => {
+    if (!id) return
+    axios.get(`http://localhost:5000/api/user/${id}/recent-timers`, { withCredentials: true })
+      .then(res => setRecentTimers(res.data))
+      .catch(err => {
+        console.error("Error fetching recent timers:", err)
+        setRecentTimers([])
+      })
+  }, [id])
 
   const handleEdit = () => {
     navigate('/edit-profile')
   }
 
- const handleBack = () => {
+  const handleBack = () => {
     navigate('/')
   }
 
@@ -43,9 +53,6 @@ function Home() {
   if(user._id === viewingUser._id) {
     ownProfile = true
   }
-
-  console.log(user)
-  console.log(viewingUser)
 
   return (
     <div className="homeContainer">
@@ -63,6 +70,33 @@ function Home() {
           </button>
         )}
       </header>
+
+      <div className="dashboardBox" style={{ maxWidth: 400, marginBottom: 32 }}>
+        <h2>Recent Timers</h2>
+        {recentTimers.length === 0 ? (
+          <p>No recent timers found.</p>
+        ) : (
+          <ul className="nonIndentedList">
+            {recentTimers.map((timer, idx) => (
+              <li key={timer._id} style={{ marginBottom: 8 }}>
+                <strong>{timer.type === 'focus' ? 'Focus' : 'Popup'} Timer</strong>
+                {timer.type === 'focus' ? (
+                  <>
+                    : {timer.focusTime} min focus, {timer.breakTime} min break, {timer.longBreakTime} min long break
+                  </>
+                ) : (
+                  <>
+                    : {timer.popupName} ({timer.popupCount} times)
+                  </>
+                )}
+                <div>
+                  {new Date(timer.createdAt).toLocaleString()}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }
