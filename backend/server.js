@@ -83,9 +83,22 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.get('/api/timers', checkAuthenticated, async (req, res) => {
     try {
-        // Include the active user and their friends
-        const ids = [...req.user.friendsList, req.user._id];
-        const usersList = await User.find({ _id: { $in: ids } });
+        let usersList = [];
+        if (req.user.friendsList && req.user.friendsList.length > 0) {
+            const ids = [...req.user.friendsList, req.user._id];
+            usersList = await User.find({ _id: { $in: ids } });
+        } 
+        else {
+            usersList = await User.aggregate([
+                { $sample: { size: 10 } }
+            ]);
+            // Ensure the current user is included
+            const alreadyIncluded = usersList.some(u => u._id.equals(req.user._id));
+            if (!alreadyIncluded) {
+                const self = await User.findById(req.user._id);
+                if (self) usersList[0] = self; // Replace first if needed
+            }
+        }
 
         const leaderboard = await Promise.all(usersList.map(async (user) => {
             const focusSessions = await FocusSession.find({ user: user._id });
@@ -394,6 +407,23 @@ app.post('/api/timers/popup', checkAuthenticated, async (req, res) => {
     console.error('Error saving popup session:', err);
     res.status(500).json({ message: 'Could not save popup session' });
   }
+});
+
+app.get('/api/user/:id/recent-timers', checkAuthenticated, async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const timers = await require('./models').TimerSession
+            .find({ user: userId })
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .lean();
+
+        res.json(timers);
+    }
+    catch (err) {
+        console.error('Error fetching recent timers:', err);
+        res.status(500).json({ message: 'Error fetching recent timers' });
+    }
 });
 
 //404 error handling

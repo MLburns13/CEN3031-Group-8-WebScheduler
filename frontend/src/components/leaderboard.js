@@ -2,33 +2,13 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../css/leaderboard.css'
 
-const Leaderboard = ({ user, allUsers, allTimers }) => {
+const Leaderboard = ({ leaderboardData }) => {
     const navigate = useNavigate()
-
-    const [sortBy, setSortBy] = useState('focusTime')
-
-    const leaderboardUsers = allUsers.filter(u =>
-    user.friendsList.includes(u._id) || u._id === user._id
-    )
-
-    const leaderboardData = leaderboardUsers.map(leaderboardUser => {
-        const userTimerSummary = allTimers.find(t => t.userId === leaderboardUser._id)
-        const focusTime = userTimerSummary?.totalFocusTime || 0
-        const popupCount = userTimerSummary?.totalPopupCount || 0
-
-        return {
-        id: leaderboardUser._id,
-        display_name: leaderboardUser.display_name,
-        username: leaderboardUser.username,
-        focusTime,
-        popupCount,
-        }
-    })
-
-    leaderboardData.sort((a, b) => b[sortBy] - a[sortBy])
+    const [sortBy, setSortBy] = useState('totalFocusTime')
+    const sortedData = [...leaderboardData].sort((a, b) => b[sortBy] - a[sortBy])
 
     const toggleSort = () => {
-        setSortBy(prev => (prev === 'focusTime' ? 'popupCount' : 'focusTime'))
+        setSortBy(prev => (prev === 'totalFocusTime' ? 'totalPopupCount' : 'totalFocusTime'))
     }
 
     return (
@@ -36,7 +16,7 @@ const Leaderboard = ({ user, allUsers, allTimers }) => {
       <div className="leaderboardHeaderRow">
         <h2>Leaderboard</h2>
         <button onClick={toggleSort} className="toggleSortButton">
-          Sort by {sortBy === 'focusTime' ? 'Popup Count' : 'Focus Time'}
+          Sort by {sortBy === 'totalFocusTime' ? 'Popup Count' : 'Focus Time'}
         </button>
       </div>
       <div className="leaderboardHeader">
@@ -46,17 +26,17 @@ const Leaderboard = ({ user, allUsers, allTimers }) => {
         <span>Focus Time</span>
         <span>Popup Count</span>
       </div>
-      {leaderboardData.map((entry, index) => (
+      {sortedData.map((entry, index) => (
         <div
-          key={entry.id}
+          key={entry.userId}
           className="leaderboardRow clickable"
-          onClick={() => navigate(`/profile/${entry.id}`)}
+          onClick={() => navigate(`/profile/${entry.userId}`)}
         >
           <span>{index + 1}</span>
           <span>{entry.display_name}</span>
           <span>{'@' + entry.username}</span>
-          <span>{entry.focusTime}</span>
-          <span>{entry.popupCount}</span>
+          <span>{entry.totalFocusTime}</span>
+          <span>{entry.totalPopupCount}</span>
         </div>
       ))}
     </div>
