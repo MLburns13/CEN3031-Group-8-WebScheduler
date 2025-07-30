@@ -98,20 +98,20 @@ function Home() {
           <ul>
             <PopupTimer
               name="Hydration"
-              popUpMessage="Time for hydration!!!!!!!!!!!!!"
-              initialMinutes={15}
+              initialMinutes={user.settings?.hydrationInterval || 15}
+              popUpMessage={user.customMessages?.hydration || 'Time for hydration!'}
             />
 
             <PopupTimer
               name="Stretch"
-              popUpMessage="Stretch it out!!!!!!!!!!!!!!!!!!!!!"
-              initialMinutes={30}
+              initialMinutes={user.settings?.stretchInterval || 30}
+              popUpMessage={user.customMessages?.stretch || 'Time to stretch!'}
             />
 
             <PopupTimer
               name="Stand"
-              initialMinutes={60}
-              popUpMessage="Stand Up!!!!!!!!!!!!!!!!!!!!!!!!!"
+              initialMinutes={user.settings?.standInterval || 60}
+              popUpMessage={user.customMessages?.stand || 'Time to stand up!'}
             />
           </ul>
 

@@ -8,21 +8,28 @@ function Home() {
   const [user, setUser] = useState(null)
   const [viewingUser, setViewingUser] = useState(null)
   const [recentTimers, setRecentTimers] = useState([])
+  const [customMsgs, setCustomMsgs] = useState({hydration: '', stretch: '', stand: '', focusCompletion: ''})
   const navigate = useNavigate()
   const { id } = useParams()
   var ownProfile = false
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/user', { withCredentials: true })
-      .then(res => setUser(res.data))
+      .then(res => {
+        setUser(res.data)
+        setCustomMsgs({
+          hydration: res.data.customMessages?.hydration || 'Time for hydration!',
+          stretch: res.data.customMessages?.stretch || 'Stretch it out!',
+          stand: res.data.customMessages?.stand || 'Stand Up!',
+          focusCompletion: res.data.customMessages?.focusCompletion || 'Good Job!'
+        })
+      })
       .catch(() => navigate('/login'))
   }, [navigate])
 
   useEffect(() => {
     axios.get(`http://localhost:5000/profile/${id}`, { withCredentials: true })
-      .then(res => {
-        setViewingUser(res.data.viewingUser)
-      })
+      .then(res => setViewingUser(res.data.viewingUser))
       .catch(err => {
         console.error("Error fetching profile:", err)
         if (err.response?.status === 401) navigate('/login')
@@ -54,6 +61,43 @@ function Home() {
     ownProfile = true
   }
 
+  const handleChange = e => {
+    const { name, value } = e.target
+    setCustomMsgs(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSave = async () => {
+    const defaults = {
+      hydration:       'Time for hydration!',
+      stretch:         'Stretch it out!',
+      stand:           'Stand Up!',
+      focusCompletion: 'Good Job!'
+    }
+
+    const newMessages = {
+      hydration:       customMsgs.hydration.trim()       === '' ? defaults.hydration       : customMsgs.hydration,
+      stretch:         customMsgs.stretch.trim()         === '' ? defaults.stretch         : customMsgs.stretch,
+      stand:           customMsgs.stand.trim()           === '' ? defaults.stand           : customMsgs.stand,
+      focusCompletion: customMsgs.focusCompletion.trim() === '' ? defaults.focusCompletion : customMsgs.focusCompletion
+    }
+
+    try {
+      await axios.post(
+        'http://localhost:5000/api/user/custom-messages',
+        newMessages,
+        { withCredentials: true }
+      )
+
+      const res = await axios.get('http://localhost:5000/api/user', { withCredentials: true })
+      setUser(res.data)
+      setViewingUser(res.data)
+      alert('Custom messages saved!')
+    } catch (err) {
+      console.error('Error saving custom messages:', err)
+      alert('Failed to save messages')
+    }
+  }
+  
   return (
     <div className="homeContainer">
       <header className="welcomeBanner">
@@ -97,6 +141,65 @@ function Home() {
           </ul>
         )}
       </div>
+
+      {ownProfile && (
+        <div className="dashboardBox">
+          <h2>Custom Timer Messages</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <label>
+              Hydration Message (max 60 chars)  
+              <input
+                type="text"
+                name="hydration"
+                value={customMsgs.hydration}
+                onChange={handleChange}
+                maxLength={60}
+              />
+            </label>
+
+            <label>
+              Stretch Message (max 60 chars)  
+              <input
+                type="text"
+                name="stretch"
+                value={customMsgs.stretch}
+                onChange={handleChange}
+                maxLength={60}
+              />
+            </label>
+
+            <label>
+              Stand Message (max 60 chars)  
+              <input
+                type="text"
+                name="stand"
+                value={customMsgs.stand}
+                onChange={handleChange}
+                maxLength={60}
+              />
+            </label>
+
+            <label>
+              Focus Completion Message (max 25 chars)  
+              <input
+                type="text"
+                name="focusCompletion"
+                value={customMsgs.focusCompletion}
+                onChange={handleChange}
+                maxLength={25}
+              />
+            </label>
+          </div>
+
+          <button
+            className="timerButton"
+            style={{ marginTop: '16px', width: '100%' }}
+            onClick={handleSave}
+          >
+            Save Messages
+          </button>
+        </div>
+      )}
     </div>
   )
 }
