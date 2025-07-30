@@ -78,7 +78,7 @@ router.post('/decline', async (req, res) => {
 
 router.get('/all-users', async (req, res) => {
   try {
-    const users = await User.find({}, 'username display_name _id')
+    const users = await User.find({}, 'username display_name _id timerSessions')
     res.json(users)
   } catch (err) {
     res.status(500).json({ error: err.message })

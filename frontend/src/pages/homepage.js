@@ -5,6 +5,7 @@ import '../css/shared-styles.css'
 import '../css/homepage.css'
 import PopupTimer from '../components/popupTimer'
 import FriendsList from '../components/friendsList'
+import Leaderboard from '../components/leaderboard'
 
 function Home() {
   const [user, setUser] = useState(null)
@@ -12,6 +13,13 @@ function Home() {
   const [searchError, setSearchError] = useState(null)
   const navigate = useNavigate()
   const [allUsers, setAllUsers] = useState([])
+  const [allTimers, setAllTimers] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/timers', { withCredentials: true })
+      .then(res => setAllTimers(res.data))
+      .catch(err => console.error('Leaderboard error:', err));
+  }, []);
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/user', { withCredentials: true })
@@ -120,8 +128,7 @@ function Home() {
         </div>
 
         <div className="dashboardBox leaderboardCard">
-          <h2>Leaderboard</h2>
-          <p>Compare your productivity with top users this week.</p>
+          <Leaderboard user={user} allUsers={allUsers} allTimers={allTimers} />
         </div>
       </div>
 
@@ -129,7 +136,6 @@ function Home() {
         axios.get('http://localhost:5000/api/user', { withCredentials: true })
           .then(res => setUser(res.data))
       }} />
-
     </div>
   )
 }
