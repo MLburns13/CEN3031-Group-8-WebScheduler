@@ -358,6 +358,27 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
+app.post('/api/user/custom-messages', checkAuthenticated, async (req, res) => {
+  const {hydration, stretch, stand, focusCompletion} = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    user.customMessages.hydration     = hydration || user.customMessages.hydration;
+    user.customMessages.stretch       = stretch   || user.customMessages.stretch;
+    user.customMessages.stand         = stand     || user.customMessages.stand;
+    user.customMessages.focusCompletion = focusCompletion || user.customMessages.focusCompletion;
+
+    await user.save();
+    res.sendStatus(200);
+  } 
+  catch (err) {
+    console.error('Error saving custom messages:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 app.use('/api/friends', friendRoutes)
 
 // focus timer route
