@@ -5,6 +5,7 @@ import '../css/shared-styles.css'
 import '../css/homepage.css'
 import PopupTimer from '../components/popupTimer'
 import FriendsList from '../components/friendsList'
+import Leaderboard from '../components/leaderboard'
 
 function Home() {
   const [user, setUser] = useState(null)
@@ -12,6 +13,13 @@ function Home() {
   const [searchError, setSearchError] = useState(null)
   const navigate = useNavigate()
   const [allUsers, setAllUsers] = useState([])
+  const [allTimers, setAllTimers] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/timers', { withCredentials: true })
+      .then(res => setAllTimers(res.data))
+      .catch(err => console.error('Leaderboard error:', err));
+  }, []);
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/user', { withCredentials: true })
@@ -47,8 +55,6 @@ function Home() {
   }
 
   if (!user) return <p>Loading...</p>
-
-  console.log(user) //Temporary for data validation. Delete later
 
   return (
     <div className="homeContainer">
@@ -92,20 +98,20 @@ function Home() {
           <ul>
             <PopupTimer
               name="Hydration"
-              popUpMessage="Time for hydration!!!!!!!!!!!!!"
-              initialMinutes={15}
+              initialMinutes={user.settings?.hydrationInterval || 15}
+              popUpMessage={user.customMessages?.hydration || 'Time for hydration!'}
             />
 
             <PopupTimer
               name="Stretch"
-              popUpMessage="Stretch it out!!!!!!!!!!!!!!!!!!!!!"
-              initialMinutes={30}
+              initialMinutes={user.settings?.stretchInterval || 30}
+              popUpMessage={user.customMessages?.stretch || 'Time to stretch!'}
             />
 
             <PopupTimer
               name="Stand"
-              initialMinutes={60}
-              popUpMessage="Stand Up!!!!!!!!!!!!!!!!!!!!!!!!!"
+              initialMinutes={user.settings?.standInterval || 60}
+              popUpMessage={user.customMessages?.stand || 'Time to stand up!'}
             />
           </ul>
 
@@ -120,8 +126,7 @@ function Home() {
         </div>
 
         <div className="dashboardBox leaderboardCard">
-          <h2>Leaderboard</h2>
-          <p>Compare your productivity with top users this week.</p>
+          <Leaderboard leaderboardData={allTimers} />
         </div>
       </div>
 
@@ -129,7 +134,6 @@ function Home() {
         axios.get('http://localhost:5000/api/user', { withCredentials: true })
           .then(res => setUser(res.data))
       }} />
-
     </div>
   )
 }

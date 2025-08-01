@@ -81,6 +81,51 @@ if (process.env.NODE_ENV !== 'test') {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 }
 
+app.get('/api/timers', checkAuthenticated, async (req, res) => {
+    try {
+        let usersList = [];
+        if (req.user.friendsList && req.user.friendsList.length > 0) {
+            const ids = [...req.user.friendsList, req.user._id];
+            usersList = await User.find({ _id: { $in: ids } });
+        } 
+        else {
+            usersList = await User.aggregate([
+                { $sample: { size: 10 } }
+            ]);
+            // Ensure the current user is included
+            const alreadyIncluded = usersList.some(u => u._id.equals(req.user._id));
+            if (!alreadyIncluded) {
+                const self = await User.findById(req.user._id);
+                if (self) usersList[0] = self; // Replace first if needed
+            }
+        }
+
+        const leaderboard = await Promise.all(usersList.map(async (user) => {
+            const focusSessions = await FocusSession.find({ user: user._id });
+            const popupSessions = await PopupSession.find({ user: user._id });
+
+            const totalFocusTime = focusSessions.reduce((sum, session) => sum + session.focusTime, 0);
+            const totalPopupCount = popupSessions.reduce((sum, session) => sum + session.popupCount, 0);
+
+            return {
+                userId: user._id,
+                username: user.username,
+                display_name: user.display_name,
+                totalFocusTime,
+                totalPopupCount
+            };
+        }));
+
+        // Sort by focus time descending
+        leaderboard.sort((a, b) => b.totalFocusTime - a.totalFocusTime);
+
+        res.json(leaderboard);
+    } catch (err) {
+        console.error('Error generating leaderboard:', err);
+        res.status(500).json({ message: 'Error generating leaderboard' });
+    }
+});
+
 // only allows users to be routed to homepage if authenticated
 app.get('/api/user', checkAuthenticated, (req, res) => {
     res.json(req.user)
@@ -328,6 +373,12 @@ app.post(
         breakTime,
         longBreakTime
       });
+
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { timerSessions: session._id } }
+      );
+
       res.status(201).json(session);
     } catch (err) {
       console.error(err);
@@ -345,11 +396,34 @@ app.post('/api/timers/popup', checkAuthenticated, async (req, res) => {
       popupName,
       popupCount
     });
+
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $push: { timerSessions: session._id } }
+    );
+    
     res.status(201).json(session);
   } catch (err) {
     console.error('Error saving popup session:', err);
     res.status(500).json({ message: 'Could not save popup session' });
   }
+});
+
+app.get('/api/user/:id/recent-timers', checkAuthenticated, async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const timers = await require('./models').TimerSession
+            .find({ user: userId })
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .lean();
+
+        res.json(timers);
+    }
+    catch (err) {
+        console.error('Error fetching recent timers:', err);
+        res.status(500).json({ message: 'Error fetching recent timers' });
+    }
 });
 
 //404 error handling

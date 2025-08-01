@@ -7,6 +7,14 @@ import axios from 'axios';
 function FocusTimerPage() {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000/api/user', { withCredentials: true })
+      .then(res => setUser(res.data))
+      .catch(() => navigate('/login'));
+  }, [navigate]);
+
   const [focusTime, setFocus]             = useState(25);
   const [breakTime, setBreakTime]         = useState(5);
   const [longBreakTime, setLongBreakTime] = useState(15);
@@ -171,7 +179,7 @@ function FocusTimerPage() {
   else {
     content = (
       <div className="timerCountdownContainer">
-        <h1>Good Job!</h1>
+        <h1>{user.customMessages.focusCompletion || 'Good Job!'}</h1>
         <p className="finishMessage">
           You focused for {Math.floor(totalFocusTime / 60)} minutes
         </p>

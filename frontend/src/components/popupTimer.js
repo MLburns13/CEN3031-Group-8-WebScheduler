@@ -21,23 +21,26 @@ export default function PopupTimer({
   const [showSettings, setShowSettings] = useState(false);
   const [isBannerActive, setIsBannerActive] = useState(false);
   const [bannerAnimation, setBannerAnimation] = useState('');
-
   const prevTimeRef = useRef(timeLeft);
   const bannerText = popUpMessage || `${name} timer has finished.`;
+  const SOUND_URL = '/sounds/popup.mp3';
+  const audioRef = useRef(null);
 
   useEffect(() => {
-    if (
-      isActive &&
-      timeLeft === duration * 60 &&
-      prevTimeRef.current <= 1
-    ) {
+    audioRef.current = new Audio(SOUND_URL);
+    audioRef.current.preload = 'auto';
+  }, []);
+
+  useEffect(() => {
+    if (isActive && timeLeft === duration * 60 && prevTimeRef.current <= 1) {
       setPopupCount(c => c + 1);
       setIsBannerActive(true);
       setBannerAnimation('slideDown');
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(console.warn);
     }
     prevTimeRef.current = timeLeft;
   }, [timeLeft, duration, isActive]);
-
   useEffect(() => {
     if (!isBannerActive) return;
 
@@ -103,6 +106,8 @@ export default function PopupTimer({
 
   return (
     <>
+      <audio ref={audioRef} preload="auto" />
+
       {isBannerActive && (
         <div className={`timerBanner ${bannerAnimation}`}>
           {bannerText}
@@ -131,11 +136,12 @@ export default function PopupTimer({
         {showSettings && (
           <div className="settingsPanel">
             <label>Every {duration} minutes</label>
+            <br></br>
             <input
               type="range"
-              min="0.10"
+              min="1"
               max="120"
-              step="5"
+              step="1"
               value={duration}
               onChange={(e) => setDuration(+e.target.value)}
             />

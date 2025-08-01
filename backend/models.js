@@ -45,6 +45,32 @@ const UserSchema = new mongoose.Schema({
         ref: "users",
         default: [],
     },
+    timerSessions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+    },
+    customMessages: {
+        hydration: {
+        type: String,
+        default: 'Time for hydration!',
+        maxlength: 60
+        },
+        stretch: {
+        type: String,
+        default: 'Stretch it out!',
+        maxlength: 60
+        },
+        stand: {
+        type: String,
+        default: 'Stand Up!',
+        maxlength: 60
+        },
+        focusCompletion: {
+        type: String,
+        default: 'Good Job!',
+        maxlength: 25
+        }
+    }
 }, { timestamps: true });
 
 const User = new mongoose.model("User", UserSchema)

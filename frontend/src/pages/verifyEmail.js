@@ -8,9 +8,9 @@ function VerifyEmail() {
   const { token } = useParams()
   const [message, setMessage] = useState('Verifying...')
 
-  useEffect(() => {
+  useEffect(() => { 
     axios.get(`http://localhost:5000/verify-email/${token}`)
-      .then(() => setMessage('Email verified! You can now log in.'))
+      .then(() => setMessage('Email verified! You can now close this page and login.'))
       .catch(() => setMessage('Invalid or expired verification link.'))
   }, [token])
 
