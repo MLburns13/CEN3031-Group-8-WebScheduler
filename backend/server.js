@@ -313,7 +313,7 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
-app.use('/api/friends', friendRoutes)
+app.use('/api/friends', checkAuthenticated, friendRoutes)
 
 // focus timer route
 app.post(
