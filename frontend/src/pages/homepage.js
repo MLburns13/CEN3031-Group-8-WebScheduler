@@ -16,18 +16,31 @@ function Home() {
   const [allTimers, setAllTimers] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/timers', { withCredentials: true })
-      .then(res => setAllTimers(res.data))
-      .catch(err => console.error('Leaderboard error:', err));
-  }, []);
+    const init = async () => {
+      try {
+        const { data: me } = await axios.get('http://localhost:5000/api/user', {
+          withCredentials: true,
+          validateStatus: status => status < 500
+        })
+        if (!me || me._id == null) {
+          return navigate('/login')
+        }
+        setUser(me)
+        const { data: timers } = await axios.get('http://localhost:5000/api/timers', {
+          withCredentials: true
+        })
+        setAllTimers(timers)
+        const { data: users } = await axios.get('http://localhost:5000/api/friends/all-users', {
+          withCredentials: true
+        })
+        setAllUsers(users)
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/user', { withCredentials: true })
-      .then(res => setUser(res.data))
-      .catch(() => navigate('/login'))
+      } catch (err) {
+        console.error('Unexpected error in init:', err)
+      }
+    }
 
-    axios.get('http://localhost:5000/api/friends/all-users', { withCredentials: true })
-      .then(res => setAllUsers(res.data))
+    init()
   }, [navigate])
 
   const handleLogout = () => {

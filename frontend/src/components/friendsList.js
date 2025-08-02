@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../css/friendList.css'
 
+
 function FriendList({ user, allUsers = [], refreshUser }) {
 
   const navigate = useNavigate()
