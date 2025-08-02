@@ -70,6 +70,12 @@ const UserSchema = new mongoose.Schema({
         default: 'Good Job!',
         maxlength: 25
         }
+    },
+    settings: {
+        hideRecentTimers: {
+        type: Boolean,
+        default: false
+        }
     }
 }, { timestamps: true });
 
