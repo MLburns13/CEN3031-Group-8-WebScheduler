@@ -16,18 +16,38 @@ function Home() {
   const [allTimers, setAllTimers] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/timers', { withCredentials: true })
-      .then(res => setAllTimers(res.data))
-      .catch(err => console.error('Leaderboard error:', err));
-  }, []);
+    const init = async () => {
+      try {
+        // 1️⃣ Confirm auth
+        const { data: me } = await axios.get('http://localhost:5000/api/user', {
+          withCredentials: true,
+          validateStatus: status => status < 500
+        })
+        if (!me || me._id == null) {
+          // not logged in → go to login
+          return navigate('/login')
+        }
+        setUser(me)
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/user', { withCredentials: true })
-      .then(res => setUser(res.data))
-      .catch(() => navigate('/login'))
+        // 2️⃣ Now that we know we’re authed, fetch leaderboard
+        const { data: timers } = await axios.get('http://localhost:5000/api/timers', {
+          withCredentials: true
+        })
+        setAllTimers(timers)
 
-    axios.get('http://localhost:5000/api/friends/all-users', { withCredentials: true })
-      .then(res => setAllUsers(res.data))
+        // 3️⃣ And friends list
+        const { data: users } = await axios.get('http://localhost:5000/api/friends/all-users', {
+          withCredentials: true
+        })
+        setAllUsers(users)
+
+      } catch (err) {
+        console.error('Unexpected error in init:', err)
+        // optionally navigate('/login') here
+      }
+    }
+
+    init()
   }, [navigate])
 
   const handleLogout = () => {
