@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../css/friendList.css'
+import { useNavigate } from 'react-router-dom'
 
 
 function FriendList({ user, allUsers = [], refreshUser }) {
@@ -9,6 +10,7 @@ function FriendList({ user, allUsers = [], refreshUser }) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('friends')
   const [searchTerm, setSearchTerm] = useState('')
+  const navigate = useNavigate()
 
   const handleAddFriend = async (targetUserId) => {
     try {
@@ -25,6 +27,33 @@ function FriendList({ user, allUsers = [], refreshUser }) {
     } catch (err) {
       console.error(err)
       alert('Failed to send friend request')
+    }
+  }
+
+  const handleRemoveFriend = async (targetUserId) => {
+    console.log('[Frontend] handleRemoveFriend called with targetUserId:', targetUserId);
+    console.log('[Frontend] Current user object:', user);
+    console.log('[Frontend] User ID:', user?._id);
+    
+    try {
+      const requestData = {
+        userId: user._id,
+        targetUserId
+      };
+      console.log('[Frontend] Sending request data:', requestData);
+      
+      const res = await axios.post(
+        'http://localhost:5000/api/friends/remove',
+        requestData,
+        { withCredentials: true }
+      )
+      console.log('[Frontend] Response received:', res.data);
+      alert(res.data.msg || 'Friend removed')
+      refreshUser()
+    } catch (err) {
+      console.error('[Frontend] Error removing friend:', err)
+      console.error('[Frontend] Error response:', err.response?.data);
+      alert('Failed to remove friend: ' + (err.response?.data?.msg || err.message))
     }
   }
 
@@ -71,7 +100,9 @@ function FriendList({ user, allUsers = [], refreshUser }) {
     !user.friendRequests.includes(u._id)
   )
 
-  const friendObjects = allUsers.filter(u => user.friendsList.includes(u._id))
+  const friendObjects = allUsers.filter(
+    u => user.friendsList.map(id => id.toString()).includes(u._id.toString())
+  );
   const requestObjects = allUsers.filter(u => user.friendRequests.includes(u._id))
 
   return (
@@ -94,6 +125,14 @@ function FriendList({ user, allUsers = [], refreshUser }) {
                   <h3>{friend.display_name}</h3>
                   <p>@{friend.username}</p>
                 </div>
+                <button
+                  className="removeBtn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveFriend(friend._id);
+                  }}>
+                  Remove Friend
+                </button>
               </div>
             ))
           )}

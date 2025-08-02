@@ -71,3 +71,24 @@ test('accept friend request', async () => {
   expect(updatedA.friendsList).toContainEqual(userB._id)
   expect(updatedB.friendsList).toContainEqual(userA._id)
 })
+
+test('remove friend successfully', async () => {
+  // First make them friends
+  userA.friendsList.push(userB._id)
+  userB.friendsList.push(userA._id)
+  await userA.save()
+  await userB.save()
+
+  const res = await request(app)
+    .post('/api/friends/remove')
+    .send({ userId: userA._id, targetUserId: userB._id })
+
+  expect(res.statusCode).toBe(200)
+  expect(res.body.msg).toBe('Friend removed')
+
+  const updatedA = await User.findById(userA._id)
+  const updatedB = await User.findById(userB._id)
+
+  expect(updatedA.friendsList).not.toContainEqual(userB._id)
+  expect(updatedB.friendsList).not.toContainEqual(userA._id)
+})

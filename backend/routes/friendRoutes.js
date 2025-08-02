@@ -76,6 +76,32 @@ router.post('/decline', async (req, res) => {
   }
 });
 
+// Remove Friend
+router.post('/remove', async (req, res) => {
+  console.log('[POST /api/friends/remove] Hit route');
+  const { userId, targetUserId } = req.body;
+  console.log('[POST /api/friends/remove] Request body:', req.body);
+
+  try {
+    const user = await User.findById(userId);
+    const targetUser = await User.findById(targetUserId);
+    
+    if (!user || !targetUser) return res.status(404).json({ msg: "User not found" });
+    
+    user.friendsList = user.friendsList.filter(id => id.toString() !== targetUserId);
+    targetUser.friendsList = targetUser.friendsList.filter(id => id.toString() !== userId);
+    
+    await user.save();
+    await targetUser.save();
+    
+    console.log('[POST /api/friends/remove] Successfully saved both users');
+    res.json({ msg: "Friend removed" });
+  } catch (err) {
+    console.error('[POST /api/friends/remove] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/all-users', async (req, res) => {
   try {
     const users = await User.find({}, 'username display_name _id timerSessions')
