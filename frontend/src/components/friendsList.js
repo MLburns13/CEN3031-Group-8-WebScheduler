@@ -2,15 +2,12 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../css/friendList.css'
-import { useNavigate } from 'react-router-dom'
-
 
 function FriendList({ user, allUsers = [], refreshUser }) {
 
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('friends')
   const [searchTerm, setSearchTerm] = useState('')
-  const navigate = useNavigate()
 
   const handleAddFriend = async (targetUserId) => {
     try {
