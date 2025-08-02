@@ -198,7 +198,10 @@ app.post('/signup', async (req, res) => {
             display_name,
             username,
             verificationToken: token,
-            tokenExpires: new Date(Date.now() + 1000 * 60 * 60)
+            tokenExpires: new Date(Date.now() + 1000 * 60 * 60),
+            settings: {
+                hideRecentTimers: false
+            }
         })
 
         await user.save()
@@ -342,9 +345,25 @@ app.put('/edit-profile', checkAuthenticated, async (req, res) => {
     }
 })
 
+app.put('/api/user/settings', checkAuthenticated, async (req, res) => {
+  const { hideRecentTimers } = req.body;
+
+  try {
+      const updated = await User.findByIdAndUpdate(
+        req.user._id,
+        { $set: { 'settings.hideRecentTimers': req.body.hideRecentTimers } },
+        { new: true, runValidators: true }
+      )
+
+      return res.json({ settings: updated.settings })
+    } catch (err) {
+      next(err)
+    }
+});
+
 //checks if user is authenticated
 function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
+    if (req.isAuthenticated && req.isAuthenticated()) {
         return next()
     }
     res.status(401).json({ message: 'Not authenticated' })

@@ -12,6 +12,7 @@ function Home() {
   const navigate = useNavigate()
   const { id } = useParams()
   var ownProfile = false
+  const [timersHidden, setTimersHidden] = useState(false)
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/user', { withCredentials: true })
@@ -29,7 +30,10 @@ function Home() {
 
   useEffect(() => {
     axios.get(`http://localhost:5000/profile/${id}`, { withCredentials: true })
-      .then(res => setViewingUser(res.data.viewingUser))
+      .then(res => {
+        setViewingUser(res.data.viewingUser)
+        setTimersHidden(!!res.data.viewingUser.settings?.hideRecentTimers)
+      })
       .catch(err => {
         console.error("Error fetching profile:", err)
         if (err.response?.status === 401) navigate('/login')
@@ -117,7 +121,10 @@ function Home() {
 
       <div className="dashboardBox" style={{ maxWidth: 400, marginBottom: 32 }}>
         <h2>Recent Timers</h2>
-        {recentTimers.length === 0 ? (
+        {timersHidden? (
+          <p>This user has hidden recent timers.</p>
+        ) :
+        recentTimers.length === 0 ? (
           <p>No recent timers found.</p>
         ) : (
           <ul className="nonIndentedList">

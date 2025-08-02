@@ -9,6 +9,7 @@ function EditProfile() {
     const [currentPassword, setCurrentPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [hideRecentTimers, setHideRecentTimers] = useState(false)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const navigate = useNavigate()
@@ -18,6 +19,8 @@ function EditProfile() {
         .then(res => {
             setUser(res.data)
             setUsername(res.data.username)
+
+            setHideRecentTimers(res.data.settings?.hideRecentTimers ?? false)
         })
         .catch(() => navigate('/login'))
     }, [navigate])
@@ -49,6 +52,26 @@ function EditProfile() {
             else {
                 setError('Failed to update profile')
             }
+        }
+    }
+
+    const handleToggleTimerVisibility = async () => {
+        const newValue = !hideRecentTimers
+        setHideRecentTimers(newValue)
+        setError('')
+        setSuccess('')
+
+        try {
+            const res = await axios.put(
+                'http://localhost:5000/api/user/settings',
+                { hideRecentTimers: newValue },
+                { withCredentials: true }
+            )
+
+            setHideRecentTimers(res.data.settings.hideRecentTimers)
+        } catch (err) {
+            console.error('Settings update failed:', err)
+            alert('Error updating settings')
         }
     }
 
@@ -106,7 +129,19 @@ function EditProfile() {
                 <button type="submit">Save Changes</button>
             </form>
             </div>
+            <div className="dashboardBox">
+                <h2>Profile Settings</h2>
+                <label>
+                <input
+                    type="checkbox"
+                    checked={hideRecentTimers}
+                    onChange={handleToggleTimerVisibility}
+                />
+                Hide recent timers on profile
+                </label>
+            </div>
         </div>
+
     )
 }
 
