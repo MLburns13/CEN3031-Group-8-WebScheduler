@@ -339,7 +339,84 @@ function Home() {
             </ul>
           )}
         </div>
+      {user.isAdmin && !ownProfile && (
+        <div className="dashboardBox" style={{ maxWidth: 400, marginBottom: 32 }}>
+          <h2>Admin Actions</h2>
 
+          <button
+            className="deleteButton"
+            onClick={async () => {
+              if (!window.confirm(`Are you sure you want to delete all sessions for ${viewingUser.display_name}?`)) return;
+
+              try {
+                await axios.delete(`http://localhost:5000/api/admin/delete-user-sessions/${viewingUser._id}`, {
+                  withCredentials: true
+                });
+                alert("All timer sessions deleted for this user.");
+                setRecentTimers([]);
+              } catch (err) {
+                console.error("Error deleting user sessions:", err);
+                alert("Failed to delete sessions.");
+              }
+            }}
+          >
+            Delete All Timer Sessions
+          </button>
+
+          {!viewingUser.isAdmin && (
+            <button
+              className="promoteButton"
+              onClick={async () => {
+                if (!window.confirm(`Are you sure you want to promote ${viewingUser.display_name} to admin?`)) return;
+
+                try {
+                  await axios.put(`http://localhost:5000/api/admin/promote/${viewingUser._id}`, {}, { withCredentials: true });
+                  alert(`${viewingUser.display_name} is now an admin!`);
+
+                  // Refresh profile data
+                  const res = await axios.get(`http://localhost:5000/profile/${viewingUser._id}`, { withCredentials: true });
+                  setViewingUser(res.data.viewingUser);
+                } catch (err) {
+                  console.error("Error promoting user:", err);
+                  alert("Failed to promote user.");
+                }
+              }}
+            >
+              Promote to Admin
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="dashboardBox" style={{ maxWidth: 400, marginBottom: 32 }}>
+        <h2>Recent Timers</h2>
+        {timersHidden? (
+          <p>This user has hidden recent timers.</p>
+        ) :
+        recentTimers.length === 0 ? (
+          <p>No recent timers found.</p>
+        ) : (
+          <ul className="nonIndentedList">
+            {recentTimers.map((timer, idx) => (
+              <li key={timer._id} style={{ marginBottom: 8 }}>
+                <strong>{timer.type === 'focus' ? 'Focus' : 'Popup'} Timer</strong>
+                {timer.type === 'focus' ? (
+                  <>
+                    : {timer.focusTime} min focus, {timer.breakTime} min break, {timer.longBreakTime} min long break
+                  </>
+                ) : (
+                  <>
+                    : {timer.popupName} ({timer.popupCount} times)
+                  </>
+                )}
+                <div>
+                  {new Date(timer.createdAt).toLocaleString()}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
         {ownProfile && (
           <div style={styles.dashboardBox}>
             <h2 style={styles.dashboardTitle}>Custom Timer Messages</h2>
