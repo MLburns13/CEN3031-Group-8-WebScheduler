@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import countDownTimer from '../hooks/timerCountdown';
-import '../css/popupTimer.css';
 
 export default function PopupTimer({
   name = 'Timer',
@@ -25,6 +24,105 @@ export default function PopupTimer({
   const bannerText = popUpMessage || `${name} timer has finished.`;
   const SOUND_URL = '/sounds/popup.mp3';
   const audioRef = useRef(null);
+
+  // Dark theme styles
+  const styles = {
+    timerBanner: {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      right: '0',
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      color: 'white',
+      padding: '16px',
+      textAlign: 'center',
+      fontSize: '16px',
+      fontWeight: '600',
+      zIndex: 1000,
+      boxShadow: '0 4px 20px rgba(99, 102, 241, 0.4)',
+      transform: bannerAnimation === 'slideDown' ? 'translateY(0)' : 'translateY(-100%)',
+      transition: 'transform 0.3s ease'
+    },
+    popupTimer: {
+      backgroundColor: 'rgba(42, 42, 62, 0.6)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '12px',
+      padding: '20px',
+      marginBottom: '16px',
+      backdropFilter: 'blur(10px)',
+      position: 'relative'
+    },
+    timerTitle: {
+      color: '#ffffff',
+      fontSize: '16px',
+      fontWeight: '600',
+      marginBottom: '16px',
+      marginTop: '0'
+    },
+    timerButton: {
+      width: '100%',
+      padding: '12px 16px',
+      border: '2px solid rgba(255, 255, 255, 0.2)',
+      borderRadius: '10px',
+      fontSize: '14px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      marginBottom: '12px',
+      backgroundColor: 'transparent',
+      color: '#a5a5b8'
+    },
+    timerButtonActive: {
+      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+      borderColor: 'rgba(239, 68, 68, 0.5)',
+      color: '#ef4444'
+    },
+    timerDisplay: {
+      display: 'block',
+      color: '#6366f1',
+      fontSize: '18px',
+      fontWeight: '700',
+      textAlign: 'center',
+      marginBottom: '12px',
+      fontFamily: "'JetBrains Mono', 'Courier New', monospace"
+    },
+    settingsButton: {
+      position: 'absolute',
+      top: '16px',
+      right: '16px',
+      background: 'transparent',
+      border: 'none',
+      color: '#a5a5b8',
+      fontSize: '18px',
+      cursor: 'pointer',
+      padding: '4px 8px',
+      borderRadius: '6px',
+      transition: 'all 0.2s ease'
+    },
+    settingsPanel: {
+      backgroundColor: 'rgba(30, 30, 46, 0.9)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '8px',
+      padding: '16px',
+      marginTop: '12px',
+      backdropFilter: 'blur(10px)'
+    },
+    settingsLabel: {
+      color: '#ffffff',
+      fontSize: '14px',
+      marginBottom: '8px',
+      display: 'block'
+    },
+    settingsSlider: {
+      width: '100%',
+      height: '6px',
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderRadius: '3px',
+      outline: 'none',
+      appearance: 'none',
+      cursor: 'pointer'
+    }
+  }
 
   useEffect(() => {
     audioRef.current = new Audio(SOUND_URL);
@@ -109,34 +207,56 @@ export default function PopupTimer({
       <audio ref={audioRef} preload="auto" />
 
       {isBannerActive && (
-        <div className={`timerBanner ${bannerAnimation}`}>
+        <div style={styles.timerBanner}>
           {bannerText}
         </div>
       )}
 
-      <div className="popupTimer">
-        <h3>{name} Reminder</h3>
+      <div style={styles.popupTimer}>
+        <h3 style={styles.timerTitle}>{name} Reminder</h3>
 
         <button
           onClick={handleStop}
-          className={isActive ? 'timerButton active' : 'timerButton'}
+          style={isActive ? { ...styles.timerButton, ...styles.timerButtonActive } : styles.timerButton}
+          onMouseEnter={(e) => {
+            if (!isActive) {
+              e.target.style.backgroundColor = 'rgba(99, 102, 241, 0.2)'
+              e.target.style.borderColor = 'rgba(99, 102, 241, 0.5)'
+              e.target.style.color = '#6366f1'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive) {
+              e.target.style.backgroundColor = 'transparent'
+              e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+              e.target.style.color = '#a5a5b8'
+            }
+          }}
         >
           {isActive ? `Stop ${name}` : `Start ${name}`}
         </button>
 
-        <span className="timerDisplay">{formattedTime(timeLeft)}</span>
+        <span style={styles.timerDisplay}>{formattedTime(timeLeft)}</span>
 
         <button
-          className="settingsButton"
+          style={styles.settingsButton}
           onClick={() => setShowSettings((v) => !v)}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
+            e.target.style.color = '#ffffff'
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent'
+            e.target.style.color = '#a5a5b8'
+          }}
         >
           ⋮
         </button>
 
         {showSettings && (
-          <div className="settingsPanel">
-            <label>Every {duration} minutes</label>
-            <br></br>
+          <div style={styles.settingsPanel}>
+            <label style={styles.settingsLabel}>Every {duration} minutes</label>
+            <br />
             <input
               type="range"
               min="1"
@@ -144,6 +264,7 @@ export default function PopupTimer({
               step="1"
               value={duration}
               onChange={(e) => setDuration(+e.target.value)}
+              style={styles.settingsSlider}
             />
           </div>
         )}

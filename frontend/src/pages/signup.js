@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import '../css/shared-styles.css'
-import '../css/login-signup.css'
 
 function Signup() {
   const [email, setEmail] = useState('')
@@ -11,6 +9,105 @@ function Signup() {
   const [display_name, setDisplayName] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  // Modern dark theme styles
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
+      fontFamily: "'Inter', 'Segoe UI', 'Roboto', sans-serif",
+      padding: '20px',
+      boxSizing: 'border-box'
+    },
+    form: {
+      backgroundColor: '#1e1e2e',
+      padding: '40px',
+      borderRadius: '20px',
+      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+      width: '100%',
+      maxWidth: '420px',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(10px)'
+    },
+    title: {
+      textAlign: 'center',
+      marginBottom: '32px',
+      color: '#ffffff',
+      fontSize: '28px',
+      fontWeight: '600',
+      letterSpacing: '-0.5px'
+    },
+    input: {
+      display: 'block',
+      width: '100%',
+      padding: '16px 20px',
+      marginBottom: '20px',
+      border: '2px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '12px',
+      fontSize: '16px',
+      backgroundColor: '#2a2a3e',
+      color: '#ffffff',
+      boxSizing: 'border-box',
+      transition: 'all 0.3s ease',
+      outline: 'none'
+    },
+    inputFocus: {
+      borderColor: '#6366f1',
+      backgroundColor: '#323244',
+      boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.1)'
+    },
+    button: {
+      width: '100%',
+      padding: '16px',
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      color: 'white',
+      border: 'none',
+      borderRadius: '12px',
+      fontSize: '16px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      marginBottom: '12px'
+    },
+    buttonHover: {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 10px 30px rgba(99, 102, 241, 0.4)'
+    },
+    secondaryButton: {
+      width: '100%',
+      padding: '14px',
+      backgroundColor: 'transparent',
+      color: '#a5a5b8',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '12px',
+      fontSize: '14px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      marginTop: '12px'
+    },
+    secondaryButtonHover: {
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      color: '#ffffff',
+      borderColor: 'rgba(255, 255, 255, 0.2)'
+    },
+    errorMessage: {
+      color: '#ef4444',
+      fontSize: '14px',
+      marginBottom: '20px',
+      textAlign: 'center',
+      padding: '12px',
+      backgroundColor: 'rgba(239, 68, 68, 0.1)',
+      border: '1px solid rgba(239, 68, 68, 0.2)',
+      borderRadius: '8px'
+    },
+    link: {
+      textDecoration: 'underline',
+      color: '#6366f1'
+    }
+  }
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
@@ -42,32 +139,53 @@ function Signup() {
   }
 
   return (
-    <div className="loginContainer">
-      <form onSubmit={handleSignup} className="loginForm">
-        <h2>Sign Up</h2>
+    <div style={styles.container}>
+      <form onSubmit={handleSignup} style={styles.form}>
+        <h2 style={styles.title}>Create Account</h2>
 
         <input
-          type="username"
+          type="text"
           placeholder="Username"
           value={username}
           onChange={e => setUsername(e.target.value)}
           required
+          style={styles.input}
+          onFocus={(e) => {
+            Object.assign(e.target.style, styles.inputFocus)
+          }}
+          onBlur={(e) => {
+            Object.assign(e.target.style, styles.input)
+          }}
         />
 
         <input
-          type="display-name"
+          type="text"
           placeholder="Display Name"
           value={display_name}
           onChange={e => setDisplayName(e.target.value)}
           required
+          style={styles.input}
+          onFocus={(e) => {
+            Object.assign(e.target.style, styles.inputFocus)
+          }}
+          onBlur={(e) => {
+            Object.assign(e.target.style, styles.input)
+          }}
         />
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Email address"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
+          style={styles.input}
+          onFocus={(e) => {
+            Object.assign(e.target.style, styles.inputFocus)
+          }}
+          onBlur={(e) => {
+            Object.assign(e.target.style, styles.input)
+          }}
         />
 
         <input
@@ -76,18 +194,42 @@ function Signup() {
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
+          style={styles.input}
+          onFocus={(e) => {
+            Object.assign(e.target.style, styles.inputFocus)
+          }}
+          onBlur={(e) => {
+            Object.assign(e.target.style, styles.input)
+          }}
         />
 
-        {error && <p className="errorMessage">{error}</p>}
+        {error && <div style={styles.errorMessage}>{error}</div>}
 
-        <button type="submit">Create Account</button>
+        <button 
+          type="submit"
+          style={styles.button}
+          onMouseEnter={(e) => {
+            Object.assign(e.target.style, { ...styles.button, ...styles.buttonHover })
+          }}
+          onMouseLeave={(e) => {
+            Object.assign(e.target.style, { ...styles.button, transform: 'none', boxShadow: styles.button.boxShadow || 'none' })
+          }}
+        >
+          Create Account
+        </button>
 
         <button
           type="button"
           onClick={() => navigate('/login')}
-          className="signupButton"
+          style={styles.secondaryButton}
+          onMouseEnter={(e) => {
+            Object.assign(e.target.style, { ...styles.secondaryButton, ...styles.secondaryButtonHover })
+          }}
+          onMouseLeave={(e) => {
+            Object.assign(e.target.style, styles.secondaryButton)
+          }}
         >
-          Already have an account? <u>Log In</u>
+          Already have an account? <span style={styles.link}>Log In</span>
         </button>
       </form>
     </div>

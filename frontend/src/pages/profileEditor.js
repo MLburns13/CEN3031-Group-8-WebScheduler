@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import '../css/shared-styles.css'
 
 function EditProfile() {
     const [user, setUser] = useState(null)
@@ -78,70 +77,350 @@ function EditProfile() {
     const handleBack = () => {
         navigate(`/profile/${user._id}`)
     }
+
+    const styles = {
+        container: {
+            fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            minHeight: '100vh',
+            background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
+            color: '#f8fafc',
+            padding: '0',
+            margin: '0'
+        },
+        header: {
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '24px 32px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'sticky',
+            top: '0',
+            zIndex: '100'
+        },
+        headerContent: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px'
+        },
+        headerTitle: {
+            fontSize: '28px',
+            fontWeight: '700',
+            margin: '0',
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+        },
+        headerSubtitle: {
+            fontSize: '16px',
+            color: '#a5a5b8',
+            margin: '0',
+            fontWeight: '400'
+        },
+        backButton: {
+            background: 'rgba(165, 165, 184, 0.2)',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '12px 24px',
+            color: '#f8fafc',
+            fontSize: '16px',
+            fontWeight: '500',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontFamily: 'inherit'
+        },
+        content: {
+            padding: '32px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px',
+            maxWidth: '800px',
+            margin: '0 auto'
+        },
+        formCard: {
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '32px',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+        },
+        formTitle: {
+            fontSize: '24px',
+            fontWeight: '600',
+            margin: '0 0 24px 0',
+            color: '#f8fafc'
+        },
+        form: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px'
+        },
+        inputGroup: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+        },
+        label: {
+            fontSize: '14px',
+            fontWeight: '500',
+            color: '#a5a5b8',
+            marginBottom: '4px'
+        },
+        input: {
+            background: '#2a2a3e',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '12px',
+            padding: '16px',
+            fontSize: '16px',
+            color: '#f8fafc',
+            fontFamily: 'inherit',
+            transition: 'all 0.3s ease',
+            outline: 'none'
+        },
+        submitButton: {
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '16px 32px',
+            color: '#ffffff',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontFamily: 'inherit',
+            marginTop: '8px'
+        },
+        settingsCard: {
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '32px',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+        },
+        settingsTitle: {
+            fontSize: '24px',
+            fontWeight: '600',
+            margin: '0 0 24px 0',
+            color: '#f8fafc'
+        },
+        checkboxContainer: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '16px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            borderRadius: '12px',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+        },
+        checkbox: {
+            width: '20px',
+            height: '20px',
+            accentColor: '#6366f1',
+            cursor: 'pointer'
+        },
+        checkboxLabel: {
+            fontSize: '16px',
+            color: '#f8fafc',
+            fontWeight: '500',
+            cursor: 'pointer',
+            userSelect: 'none'
+        },
+        errorMessage: {
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            color: '#fca5a5',
+            fontSize: '14px',
+            margin: '8px 0'
+        },
+        successMessage: {
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            color: '#6ee7b7',
+            fontSize: '14px',
+            margin: '8px 0'
+        },
+        loading: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
+            color: '#a5a5b8',
+            fontSize: '18px',
+            fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        }
+    }
     
-    if (!user) return <p>Loading...</p>
+    if (!user) return <div style={styles.loading}>Loading...</div>
 
     return (
-        <div className="homeContainer">
-            <div className="welcomeBanner">
-            <h2>Edit Profile</h2>
-            <div className="accountDropdown">
-                <button className="accountDropdownButton" onClick={handleBack}>
+        <div style={styles.container}>
+            <header style={styles.header}>
+                <div style={styles.headerContent}>
+                    <h1 style={styles.headerTitle}>Edit Profile ✏️</h1>
+                    <p style={styles.headerSubtitle}>Update your account information and settings</p>
+                </div>
+                <button 
+                    style={styles.backButton}
+                    onClick={handleBack}
+                    onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'rgba(165, 165, 184, 0.3)'
+                    }}
+                    onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'rgba(165, 165, 184, 0.2)'
+                    }}
+                >
                     Back
-                </button> 
-            </div>
-            <form onSubmit={handleSubmit}>
-                <label>Username:</label>
-                <input 
-                    type="text" 
-                    value={username} 
-                    onChange={e => setUsername(e.target.value)} 
-                    required 
-                />
+                </button>
+            </header>
 
-                <label>Current Password:</label>
-                <input 
-                    type="password" 
-                    value={currentPassword} 
-                    onChange={e => setCurrentPassword(e.target.value)} 
-                    required 
-                />
+            <div style={styles.content}>
+                <div style={styles.formCard}>
+                    <h2 style={styles.formTitle}>Account Information</h2>
+                    <form style={styles.form} onSubmit={handleSubmit}>
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>Username</label>
+                            <input 
+                                type="text" 
+                                value={username} 
+                                onChange={e => setUsername(e.target.value)} 
+                                required 
+                                style={styles.input}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#6366f1'
+                                    e.target.style.backgroundColor = '#323244'
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                                    e.target.style.backgroundColor = '#2a2a3e'
+                                    e.target.style.boxShadow = 'none'
+                                }}
+                            />
+                        </div>
 
-                <label>New Password:</label>
-                <input 
-                    type="password" 
-                    value={newPassword} 
-                    onChange={e => setNewPassword(e.target.value)} 
-                    required 
-                />
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>Current Password</label>
+                            <input 
+                                type="password" 
+                                value={currentPassword} 
+                                onChange={e => setCurrentPassword(e.target.value)} 
+                                required 
+                                style={styles.input}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#6366f1'
+                                    e.target.style.backgroundColor = '#323244'
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                                    e.target.style.backgroundColor = '#2a2a3e'
+                                    e.target.style.boxShadow = 'none'
+                                }}
+                            />
+                        </div>
 
-                <label>Confirm Password:</label>
-                <input 
-                    type="password" 
-                    value={confirmPassword} 
-                    onChange={e => setConfirmPassword(e.target.value)} 
-                    required 
-                />
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>New Password</label>
+                            <input 
+                                type="password" 
+                                value={newPassword} 
+                                onChange={e => setNewPassword(e.target.value)} 
+                                required 
+                                style={styles.input}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#6366f1'
+                                    e.target.style.backgroundColor = '#323244'
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                                    e.target.style.backgroundColor = '#2a2a3e'
+                                    e.target.style.boxShadow = 'none'
+                                }}
+                            />
+                        </div>
 
-                {error && <p className="errorMessage">{error}</p>}
-                {success && <p className="successMessage">{success}</p>}
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>Confirm Password</label>
+                            <input 
+                                type="password" 
+                                value={confirmPassword} 
+                                onChange={e => setConfirmPassword(e.target.value)} 
+                                required 
+                                style={styles.input}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#6366f1'
+                                    e.target.style.backgroundColor = '#323244'
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                                    e.target.style.backgroundColor = '#2a2a3e'
+                                    e.target.style.boxShadow = 'none'
+                                }}
+                            />
+                        </div>
 
-                <button type="submit">Save Changes</button>
-            </form>
-            </div>
-            <div className="dashboardBox">
-                <h2>Profile Settings</h2>
-                <label>
-                <input
-                    type="checkbox"
-                    checked={hideRecentTimers}
-                    onChange={handleToggleTimerVisibility}
-                />
-                Hide recent timers on profile
-                </label>
+                        {error && <div style={styles.errorMessage}>{error}</div>}
+                        {success && <div style={styles.successMessage}>{success}</div>}
+
+                        <button 
+                            type="submit" 
+                            style={styles.submitButton}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'translateY(-2px)'
+                                e.target.style.boxShadow = '0 8px 25px rgba(99, 102, 241, 0.4)'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'none'
+                                e.target.style.boxShadow = 'none'
+                            }}
+                        >
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <div style={styles.settingsCard}>
+                    <h2 style={styles.settingsTitle}>Profile Settings</h2>
+                    <div 
+                        style={styles.checkboxContainer}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'
+                            e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.03)'
+                            e.target.style.borderColor = 'rgba(255, 255, 255, 0.05)'
+                        }}
+                    >
+                        <input
+                            type="checkbox"
+                            checked={hideRecentTimers}
+                            onChange={handleToggleTimerVisibility}
+                            style={styles.checkbox}
+                        />
+                        <label style={styles.checkboxLabel}>
+                            Hide recent timers on profile
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
-
     )
 }
 
