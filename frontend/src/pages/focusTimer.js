@@ -312,6 +312,7 @@ function FocusTimerPage() {
           <span style={styles.settingLabel}>Focus for</span>
           <input
             type="number"
+            min={1}
             style={styles.input}
             value={focusTime}
             onChange={e => setFocus(Number(e.target.value))}
@@ -332,6 +333,7 @@ function FocusTimerPage() {
           <span style={styles.settingLabel}>Break for</span>
           <input
             type="number"
+            min={1}
             style={styles.input}
             value={breakTime}
             onChange={e => setBreakTime(Number(e.target.value))}
@@ -352,6 +354,7 @@ function FocusTimerPage() {
           <span style={styles.settingLabel}>Long break for</span>
           <input
             type="number"
+            min={1}
             style={styles.input}
             value={longBreakTime}
             onChange={e => setLongBreakTime(Number(e.target.value))}
@@ -372,6 +375,7 @@ function FocusTimerPage() {
           <span style={styles.settingLabel}>Long break every</span>
           <input
             type="number"
+            min={1}
             style={styles.input}
             value={intervals}
             onChange={e => setIntervals(Number(e.target.value))}
