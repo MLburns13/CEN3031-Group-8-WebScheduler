@@ -445,6 +445,53 @@ app.get('/api/user/:id/recent-timers', checkAuthenticated, async (req, res) => {
     }
 });
 
+app.delete('/api/admin/delete-user-sessions/:userId', checkAuthenticated, async (req, res) => {
+    try {
+        if (!req.user.isAdmin) {
+            return res.status(403).json({ message: 'Not authorized' });
+        }
+
+        const userId = req.params.userId;
+
+        // Delete timer sessions
+        await FocusSession.deleteMany({ user: userId });
+        await PopupSession.deleteMany({ user: userId });
+
+        // Clear references from User model
+        await User.findByIdAndUpdate(userId, { $set: { timerSessions: [] } });
+
+        res.status(200).json({ message: 'All sessions deleted for this user' });
+    } 
+    catch (err) {
+        console.error('Error deleting user sessions:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.put('/api/admin/promote/:userId', checkAuthenticated, async (req, res) => {
+    try {
+        if (!req.user.isAdmin) {
+            return res.status(403).json({ message: 'Not authorized' });
+        }
+
+        const userId = req.params.userId;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { isAdmin: true } },
+            { new: true }
+        );
+
+        if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+
+        res.status(200).json({ message: 'User promoted to admin' });
+    } 
+    catch (err) {
+        console.error('Error promoting user:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 //404 error handling
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' })

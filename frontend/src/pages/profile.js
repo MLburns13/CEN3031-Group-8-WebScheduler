@@ -119,6 +119,55 @@ function Home() {
         )}
       </header>
 
+      {user.isAdmin && !ownProfile && (
+        <div className="dashboardBox" style={{ maxWidth: 400, marginBottom: 32 }}>
+          <h2>Admin Actions</h2>
+
+          <button
+            className="deleteButton"
+            onClick={async () => {
+              if (!window.confirm(`Are you sure you want to delete all sessions for ${viewingUser.display_name}?`)) return;
+
+              try {
+                await axios.delete(`http://localhost:5000/api/admin/delete-user-sessions/${viewingUser._id}`, {
+                  withCredentials: true
+                });
+                alert("All timer sessions deleted for this user.");
+                setRecentTimers([]);
+              } catch (err) {
+                console.error("Error deleting user sessions:", err);
+                alert("Failed to delete sessions.");
+              }
+            }}
+          >
+            Delete All Timer Sessions
+          </button>
+
+          {!viewingUser.isAdmin && (
+            <button
+              className="promoteButton"
+              onClick={async () => {
+                if (!window.confirm(`Are you sure you want to promote ${viewingUser.display_name} to admin?`)) return;
+
+                try {
+                  await axios.put(`http://localhost:5000/api/admin/promote/${viewingUser._id}`, {}, { withCredentials: true });
+                  alert(`${viewingUser.display_name} is now an admin!`);
+
+                  // Refresh profile data
+                  const res = await axios.get(`http://localhost:5000/profile/${viewingUser._id}`, { withCredentials: true });
+                  setViewingUser(res.data.viewingUser);
+                } catch (err) {
+                  console.error("Error promoting user:", err);
+                  alert("Failed to promote user.");
+                }
+              }}
+            >
+              Promote to Admin
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="dashboardBox" style={{ maxWidth: 400, marginBottom: 32 }}>
         <h2>Recent Timers</h2>
         {timersHidden? (
